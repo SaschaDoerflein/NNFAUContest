@@ -8,16 +8,16 @@ public class MainChris
 	public static void main(String[] args) throws IOException
 	{
 		//Testcases.doTestcases();
-		int[] test = {1,0,0};
+		int[] test = {0,1,0};
 
 		/*---------------------------------------------------
 		------ Example NeuralNet using Titanic-Dataset ------
 		---------------------------------------------------*/
 		if (test[0] == 1) {
 			ArrayList<Datum> dataAndLabel=DataReader.readTitanicDataset("titanic_training.txt",true);
-			int iterations = 50001;
+			int iterations = 500;
 			int length = dataAndLabel.size();
-			Network n=new Network(new VariantLearningRate(0.0001f,iterations,1,null));
+			Network n=new Network(new VariantLearningRate(0.00001f,iterations,1,null));
 			//Network n=new Network(new ConstantLearningRate(0.001f));
 	
 			n.add(new InputLayer(6));
@@ -27,7 +27,7 @@ public class MainChris
 			}*/
 			
 			//n.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 600, 60));
-			n.add(new OutputLayer(new EuclideanLoss(),new LinearActivation(), new RandomWeight(), new ConstantBias(), 6, 1, 16));
+			n.add(new OutputLayer(new EuclideanLoss(),new LinearActivation(), new RandomWeight(), new ConstantBias(), 6, 1, 1));
 			
 			
 			for(int j=0;j<iterations;j++)
@@ -94,19 +94,19 @@ public class MainChris
 	
 			for(int j=0;j<iterations2;j++)
 			{
-			   System.out.println("Iteration: "+j);
+				if (j%(iterations2/10)==0 || j < 3) System.out.println("Iteration: "+j) ;
 	
 				for(int i=0;i<dataAndLabel2.size();i++)
 				{
 					int idx=i;
 					Blob out=n2.trainSimpleSGD(dataAndLabel2.get(idx).data, dataAndLabel2.get(idx).label);
 	
-					if((j==iterations2-1 || j<2) && i<10)
+					if((j==iterations2-1 || j<3 || (j%(iterations2/10)==0 && j > 500)) && i<2)
 					{
 	
 						for(int h=0;h<out.getLength();h++)
 						{
-						 	System.out.print(out.getValue(h)+" ");
+						 	System.out.print(Math.round(out.getValue(h))+" ");
 						}
 	
 						System.out.print("vs. ");
@@ -121,17 +121,14 @@ public class MainChris
 			}
 	
 			ArrayList<Datum> testData2=DataReader.readTraveltimeDataset("rta_test1.txt",false);
-	
+			
+			float tempval;
 			for(int i=0;i<testData2.size();i++)
 			{
 				Blob out[]=n2.forward(testData2.get(i).data);
-				if(out[out.length-1].getValue(0) < 0.5)
-				{
-					testData2.get(i).label.setValue(0,0f);
-				}
-				else
-				{
-					testData2.get(i).label.setValue(0,1f);
+				for (int j = 0; j < out[out.length-1].getLength();j++) {
+					tempval = Math.round(out[out.length-1].getValue(j));
+					testData2.get(i).label.setValue(j,tempval);
 				}
 			}
 
