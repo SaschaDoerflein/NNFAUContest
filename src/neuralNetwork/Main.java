@@ -12,7 +12,7 @@ public class Main
 	public static void main(String[] args) throws IOException
 	{
 		
-		int[] test = {1,1,0};
+		int[] test = {0,1,0};
 		
 		
 		if (test[0]==1) {
@@ -31,7 +31,8 @@ public class Main
 
 				n.add(new InputLayer(6));
 				
-				for(int ii = 0; ii<0;ii++) {
+				//In every epoch there are more FullyConnected Layers
+				for(int ii = 0; ii<i;ii++) {
 					n.add(new FullyConnected(new SigmoidActivation(), new RandomWeight(), new ConstantBias(), 6, 6));
 				}
 				
@@ -40,7 +41,7 @@ public class Main
 			}
 			
 			
-			th.performTest(networks, iterations,"titanic_training.txt");
+			th.performTest(networks, iterations,"titanic_training.txt",1);
 			
 			/* TODO: prediction make no sense right now because we have no expected value
 			 * 
@@ -79,16 +80,16 @@ public class Main
 				Network n=new Network(new VariantLearningRate(learningRate,iterations));
 				//Network n=new Network(new ConstantLearningRate(0.0001f));
 
-				n.add(new InputLayer(6));
+				n.add(new InputLayer(26));
 				
 				for(int ii = 0; ii<0;ii++) {
 					n.add(new FullyConnected(new SigmoidActivation(), new RandomWeight(), new ConstantBias(), 6, 6));
 				}
 				
-				n.add(new OutputLayer(new EuclideanLoss(),new LinearActivation(), new RandomWeight(), new ConstantBias(), 6, 1));
+				n.add(new OutputLayer(new EuclideanLoss(),new LinearActivation(), new RandomWeight(), new ConstantBias(), 26, 6));
 				networks[i] = n;
 			}
-			th.performTest(networks, iterations,"rta_training.txt");
+			th.performTest(networks, iterations,"rta_training.txt",2);
 	/*
 			ArrayList<Datum> testData2=DataReader.readTraveltimeDataset("rta_test1.txt",false);
 	
@@ -113,49 +114,35 @@ public class Main
 		
 		/*---------------------------------------------------
 		------ Example NeuralNet using ImageDataset ------
-		---------------------------------------------------
-		if (test[2] == 1) {
-			
-			ArrayList<Datum> dataAndLabel3=DataReader.getImageDataset("image_training.bin",true);
-	
-			Network n2=new Network(new ConstantLearningRate(0.0000001f));
-	
-			n2.add(new InputLayer(32*32*3));
-			//n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 32*32*3, 200));
-			//n2.add(new FullyConnected(new SigmoidActivation(), new RandomWeight(), new ConstantBias(), 40, 10));
-			n2.add(new OutputLayer(new EuclideanLoss(), new LinearActivation(), new RandomWeight(), new ConstantBias(), 32*32*3, 1));
+		--------------------------------------------------- */
+		
+		if (test[2] == 1) {		
 			int iterations = 1000;
-			int length3 = dataAndLabel3.size();
-			for(int j=0;j<iterations;j++)
-			{
-			   System.out.println("Iteration: "+j);
-			   	
-				for(int i=0;i<length3;i++)
-				{
-					//if (i%3000 == 0) System.out.println("Test: "+ i + "/" + length3);
-					int idx=i;
-					Blob out=n2.trainSimpleSGD(dataAndLabel3.get(idx).data, dataAndLabel3.get(idx).label);
-	
-					if((j==iterations-1 || j<10) && i<100)
-					{
-	
-						for(int h=0;h<out.getLength();h++)
-						{
-						 	System.out.print(out.getValue(h)+" ");
-						}
-	
-						System.out.print("vs. ");
-	
-						for(int h=0;h<dataAndLabel3.get(idx).label.getLength();h++)
-						{
-						 	System.out.print(dataAndLabel3.get(idx).label.getValue(h)+" ");
-						}
-						System.out.println();
-					}
+			int epochs = 1;
+			float learningRate = 0.0000001f;
+			
+			TestHelper th = new TestHelper(new SimpleAccuracyFunction());
+			
+			//Here you can create more networks to see if there is a varianz in the output networks. 
+			Network[] networks = new Network[epochs];
+			
+			for(int i=0; i<epochs; i++) {
+				Network n=new Network(new ConstantLearningRate(learningRate));
+				//Network n=new Network(new ConstantLearningRate(0.0001f));
+
+				n.add(new InputLayer(32*32*3));
+				
+				for(int ii = 0; ii<0;ii++) {
+					n.add(new FullyConnected(new SigmoidActivation(), new RandomWeight(), new ConstantBias(), 6, 6));
 				}
+				
+				n.add(new OutputLayer(new EuclideanLoss(), new LinearActivation(), new RandomWeight(), new ConstantBias(), 32*32*3, 1));
+				networks[i] = n;
 			}
-	
-			ArrayList<Datum> testData3=DataReader.getImageDataset("image_test1.bin",false);
+			th.performTest(networks, iterations,"image_training.bin",3);
+		
+			/*
+			 * ArrayList<Datum> testData3=DataReader.getImageDataset("image_test1.bin",false);
 	
 			for(int i=0;i<testData3.size();i++)
 			{
@@ -172,8 +159,8 @@ public class Main
 			}
 	
 			DataWriter.writeLabelsToFile("image_prediction.txt", testData3);
+			 */
 			
 		}
-*/
 	}
 }

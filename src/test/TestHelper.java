@@ -2,6 +2,7 @@ package test;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import neuralNetwork.Blob;
 import neuralNetwork.DataReader;
@@ -17,26 +18,63 @@ public class TestHelper {
 	}
 	
 	//Write every result from every iterations separated in epochs into a output file
-	public void performTest(Network[] networks, int iterations,String fileName) {
+	public void performTest(Network[] networks, int iterations,String fileName, int option) {
 		System.out.println("------------"+fileName+"------------");
 		float[] realErrors = new float[networks.length];
 		float[] variances = new float[networks.length];
 		int[][] errorClassesArray = new int[networks.length][];
 		
-		for(int e=0; e<networks.length; e++) {
-			//For Training		
-			ArrayList<Datum> dataAndLabel;
+		
+			//Data 	
+			ArrayList<Datum> dataAndLabel=null;
 			try {
-				dataAndLabel = DataReader.readTitanicDataset(fileName,true);
+				if (option == 1) {
+					dataAndLabel = DataReader.readTitanicDataset(fileName,true);
+				}else if(option == 2) {
+					dataAndLabel = DataReader.readTraveltimeDataset(fileName,true);
+				}else if (option == 3) {
+					dataAndLabel = DataReader.getImageDataset(fileName,true);
+				}
+				
 			
 			int length = dataAndLabel.size();
+			
+			
+			
+			//Normalisation
+			//TODO: Sascha 4.7.  Should be good but makes thinks worse :(
+			
+			int lenOfBlob = dataAndLabel.get(0).data.values.length;	
+			float[] maxes = new float[lenOfBlob];
+			
+			for(int i = 0; i < length; i++) {
+				Blob b = dataAndLabel.get(i).data;
+				
+				for(int n = 0; n < b.values.length; n++) {
+					if(maxes[n] < b.values[n]) {
+						maxes[n] = b.values[n];
+					}
+				}
+			}
+			for(int i = 0; i < length; i++) {
+				Blob b = dataAndLabel.get(i).data;
+				
+				for(int n = 0; n < b.values.length; n++) {
+					b.values[n] = b.values[n]/maxes[n];
+				}
+			}
+			
+			
+			//Iteration
+			for(int e=0; e<networks.length; e++) {
+			
 			
 			ArrayList<Float> result = af.getResult();
 			ArrayList<Float> expected = af.getExpected();
 			
 			for(int j=0;j<iterations;j++)
 			{
-			//if (j%100==0) System.out.println("Iteration: "+j);
+			if (j%100==0) System.out.println("Iteration: "+j);
 
 				for(int i=0;i<length;i++)
 				{
@@ -49,7 +87,7 @@ public class TestHelper {
 						for(int h=0;h<out.getLength();h++)
 						{
 						 	//System.out.print(out.getValue(h)+" ");
-						 	result.add(out.getValue(h));
+						 	result.add(out.getValue(h)*maxes[h]);
 						}
 
 						//System.out.print("vs. ");
@@ -73,6 +111,7 @@ public class TestHelper {
 			variances[e] = variance;
 			errorClassesArray[e] = errorClasses;
 			
+			System.out.println(System.lineSeparator());
 			System.out.println("Epoch: "+e);
 			System.out.println("Total diff:"+realError);
 			
@@ -83,13 +122,13 @@ public class TestHelper {
 			af.setResult(new ArrayList<Float>());
 			System.out.println(System.lineSeparator());
 			
-		} catch (IOException ee) {
-			// TODO Auto-generated catch block
-			ee.printStackTrace();
-		}
+		
 		
 		}
-		
+			} catch (IOException ee) {
+				// TODO Auto-generated catch block
+				ee.printStackTrace();
+			}
 		
 		/*
 		 * TODO: For test file? We can't compute any variance because we have no expected values!

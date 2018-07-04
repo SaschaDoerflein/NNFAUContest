@@ -105,7 +105,7 @@ public class SimpleAccuracyFunction implements AccuracyFunction{
 			index += 1;
 					}
 		
-		System.out.println("Error until 0.5: "+halfSum+" "+halfSum/(float)result.size()+"%");
+		System.out.println("Error till 0.5: "+halfSum+" "+halfSum/(float)result.size()+"%");
 		
 		return output;
 	}

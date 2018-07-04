@@ -1,1 +1,12 @@
 /bin/
+/classes.txt
+/image_test1.bin
+/image_training.bin
+/Out_Titantic_Test.txt
+/Out_Titantic_Training.txt
+/rta_prediction.txt
+/rta_test1.txt
+/rta_training.txt
+/titanic_prediction.txt
+/titanic_test1.txt
+/titanic_training.txt
