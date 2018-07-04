@@ -4,7 +4,7 @@
 RandomWeigths (evtl. Inteface) anpassen, sodass man nicht jedes mal in der Klasse Magic Numbers ändern muss
 ^^gleiches für constbias
 
-Layers anpassen:
+Netz/Layers anpassen:
 
        Dropout implementieren
        early Prediction (Zwischenwerte ausgeben lassen)
