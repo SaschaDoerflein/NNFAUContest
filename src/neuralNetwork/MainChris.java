@@ -17,7 +17,7 @@ public class MainChris
 			ArrayList<Datum> dataAndLabel=DataReader.readTitanicDataset("titanic_training.txt",true);
 			int iterations = 50001;
 			int length = dataAndLabel.size();
-			Network n=new Network(new VariantLearningRate(0.0001f,iterations));
+			Network n=new Network(new VariantLearningRate(0.0001f,iterations,1,null));
 			//Network n=new Network(new ConstantLearningRate(0.001f));
 	
 			n.add(new InputLayer(6));
@@ -85,7 +85,7 @@ public class MainChris
 			
 			int iterations2 = 10000;
 			Network n2=new Network(new ConstantLearningRate(0.0000000007f));
-			//Network n2=new Network(new VariantLearningRate(0.0001f,iterations2));
+			//Network n2=new Network(new VariantLearningRate(0.0001f,iterations2,1,null));
 	
 			n2.add(new InputLayer(26));
 			//n2.add(new FullyConnected(new SigmoidActivation(), new RandomWeight(), new ConstantBias(), 26, 40));
