@@ -1,12 +1,21 @@
 # NNFAUContest
 **TODO:**
 
-Chris: test2 output in prediction fitten
-       test3 output in bits ändern
-       
-1. Nehme Präsentationen vom Marcel (wird bald im Forum Hochgeladen) und erstelle eine TODO liste ;)
+RandomWeigths (evtl. Inteface) anpassen, sodass man nicht jedes mal in der Klasse Magic Numbers ändern muss
+^^gleiches für constbias
 
-2...
+Layers anpassen:
+       Dropout implementieren
+       early Prediction (Zwischenwerte ausgeben lassen)
+       Recurring
+
+Passende initial Werte für Test2 (Travel) / Normalisieren für die Activationfunc!?
+
+Data Augmentation für image Test
+       
+Hochgeladen -> Nehme Präsentationen vom Marcel (wird bald im Forum Hochgeladen) und erstelle eine TODO liste ;)
+
+...
 
 **Log File Sascha**
 
@@ -28,7 +37,7 @@ SigmoidFunction: Ich hab die Funktion auf 0 bis 1 gedeckelt Ergebnis:
 
 **Log File Chris**
 
-**4.Jul
+**4.Jul**
 
 Test 1 ~80 Acc mit Outputlayer Standard RandomW und Bias, Tanh und LearningRate ~0.0002f  (2 Hidden Layer verbessern auf 81%...noch was möglich?)
 
