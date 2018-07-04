@@ -1,6 +1,8 @@
 # NNFAUContest
 **TODO:**
-
+Chris: test2 output in prediction fitten
+       test3 output in bits ändern
+       
 1. Nehme Präsentationen vom Marcel (wird bald im Forum Hochgeladen) und erstelle eine TODO liste ;)
 
 2...
