@@ -5,6 +5,7 @@ RandomWeigths (evtl. Inteface) anpassen, sodass man nicht jedes mal in der Klass
 ^^gleiches für constbias
 
 Layers anpassen:
+
        Dropout implementieren
        early Prediction (Zwischenwerte ausgeben lassen)
        Recurring
