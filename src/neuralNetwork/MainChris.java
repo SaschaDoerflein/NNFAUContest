@@ -8,26 +8,26 @@ public class MainChris
 	public static void main(String[] args) throws IOException
 	{
 		//Testcases.doTestcases();
-		int[] test = {0,1,0};
+		int[] test = {0,0,1};
 
 		/*---------------------------------------------------
 		------ Example NeuralNet using Titanic-Dataset ------
 		---------------------------------------------------*/
 		if (test[0] == 1) {
 			ArrayList<Datum> dataAndLabel=DataReader.readTitanicDataset("titanic_training.txt",true);
-			int iterations = 500;
+			int iterations = 1000000;
 			int length = dataAndLabel.size();
-			Network n=new Network(new VariantLearningRate(0.00001f,iterations,1,null));
+			Network n=new Network(new VariantLearningRate(0.00005f,iterations,1,null));
 			//Network n=new Network(new ConstantLearningRate(0.001f));
 	
 			n.add(new InputLayer(6));
-			//n.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 6, 4));
+			n.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 6, 4, 16));
 			/*for (int i = 0; i < 20; i++) {
 				n.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 4, 4));
 			}*/
 			
-			//n.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 600, 60));
-			n.add(new OutputLayer(new EuclideanLoss(),new LinearActivation(), new RandomWeight(), new ConstantBias(), 6, 1, 1));
+			n.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 4, 2, 16));
+			n.add(new OutputLayer(new EuclideanLoss(),new LinearActivation(), new RandomWeight(), new ConstantBias(), 2, 1, 16));
 			
 			
 			for(int j=0;j<iterations;j++)
@@ -83,30 +83,33 @@ public class MainChris
 		if (test[1] == 1) {
 			ArrayList<Datum> dataAndLabel2=DataReader.readTraveltimeDataset("rta_training.txt",true);
 			
-			int iterations2 = 10000;
-			Network n2=new Network(new ConstantLearningRate(0.0000000007f));
+			int iterations2 = 1;
+			Network n2=new Network(new ConstantLearningRate(0.0007f));
 			//Network n2=new Network(new VariantLearningRate(0.0001f,iterations2,1,null));
 	
 			n2.add(new InputLayer(26));
-			//n2.add(new FullyConnected(new SigmoidActivation(), new RandomWeight(), new ConstantBias(), 26, 40));
-			//n2.add(new FullyConnected(new SigmoidActivation(), new RandomWeight(), new ConstantBias(), 40, 10));
-			n2.add(new OutputLayer(new EuclideanLoss(), new LinearActivation(), new RandomWeight(), new ConstantBias(), 26, 6, 16));
+			n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 26, 16, 50));
+			n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 16, 16, 50));
+			n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 16, 16, 50));
+			n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 16, 16, 50));
+			n2.add(new FullyConnected(new SigmoidActivation(), new RandomWeight(), new ConstantBias(), 16, 16, 50));
+			n2.add(new OutputLayer(new EuclideanLoss(), new LinearActivation(), new RandomWeight(), new ConstantBias(), 16, 6, 50));
 	
 			for(int j=0;j<iterations2;j++)
 			{
-				if (j%(iterations2/10)==0 || j < 3) System.out.println("Iteration: "+j) ;
+				if ((j > 10 && j%(iterations2/10)==0) || j < 3) System.out.println("Iteration: "+j) ;
 	
 				for(int i=0;i<dataAndLabel2.size();i++)
 				{
 					int idx=i;
 					Blob out=n2.trainSimpleSGD(dataAndLabel2.get(idx).data, dataAndLabel2.get(idx).label);
 	
-					if((j==iterations2-1 || j<3 || (j%(iterations2/10)==0 && j > 500)) && i<2)
+					if((j==iterations2-1 || j<3 || ( j > 500 && j%(iterations2/10)==0)) && i<10)
 					{
 	
 						for(int h=0;h<out.getLength();h++)
 						{
-						 	System.out.print(Math.round(out.getValue(h))+" ");
+						 	System.out.print(out.getValue(h)+" ");
 						}
 	
 						System.out.print("vs. ");
@@ -152,26 +155,32 @@ public class MainChris
 			n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 32, 16, 16));
 			n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 16, 8, 16));
 			//n2.add(new FullyConnected(new SigmoidActivation(), new RandomWeight(), new ConstantBias(), 40, 10));
-			n2.add(new OutputLayer(new EuclideanLoss(), new LinearActivation(), new RandomWeight(), new ConstantBias(), 8, 1, 16));
-			int iterations = 1000;
+			n2.add(new OutputLayer(new EuclideanLoss(), new LinearActivation(), new RandomWeight(), new ConstantBias(), 8, 6, 16));
+			int iterations = 1;
 			int length3 = dataAndLabel3.size();
 			for(int j=0;j<iterations;j++)
 			{
 				if (j > 10 && j%(iterations/10)==0 || j < 3) System.out.println("Iteration: "+j) ;
+		//early prediction
 				if (j > 100 && j%(iterations/100)==0) {
 					ArrayList<Datum> testData3=DataReader.getImageDataset("image_test1.bin",false);
 					float tempval;
+					float maxtempval = 0;
+					int maxk = 0;
 					for(int i=0;i<testData3.size();i++)
 					{
 						Blob out[]=n2.forward(testData3.get(i).data);
-						tempval = out[out.length-1].getValue(0);
-						if (tempval < 0) tempval = 0;
-						if (tempval > 5) tempval = 5;
-						testData3.get(i).label.setValue(0, Math.round(tempval));
-					}					
-		
-				DataWriter.writeLabelsToFile("image_prediction.txt", testData3);
-				System.out.print(" some done");
+						for (int k = 0; k < 6; k++) {
+							tempval = out[out.length-1].getValue(k);
+							if (tempval > maxtempval) {
+								maxtempval = tempval;
+								maxk = k;
+							}
+						}
+						testData3.get(i).label.setValue(0, (float) maxk);
+					}
+			
+					DataWriter.writeLabelsToFile("image_prediction.txt", testData3);
 				}
 				
 				for(int i=0;i<length3;i++)
@@ -198,24 +207,23 @@ public class MainChris
 					}
 				}
 			}
-	
+			
+		//prediction
 			ArrayList<Datum> testData3=DataReader.getImageDataset("image_test1.bin",false);
 			float tempval;
+			float maxtempval = 0;
+			int maxj = 0;
 			for(int i=0;i<testData3.size();i++)
 			{
 				Blob out[]=n2.forward(testData3.get(i).data);
-				tempval = out[out.length-1].getValue(0);
-				if (tempval < 0) tempval = 0;
-				if (tempval > 5) tempval = 5;
-				testData3.get(i).label.setValue(0, Math.round(tempval));
-				/*if(out[out.length-1].getValue(0) < 0.5)
-				{
-					testData3.get(i).label.setValue(0,0f);
+				for (int j = 0; j < 6; j++) {
+					tempval = out[out.length-1].getValue(j);
+					if (tempval > maxtempval) {
+						maxtempval = tempval;
+						maxj = j;
+					}
 				}
-				else
-				{
-					testData3.get(i).label.setValue(0,1f);
-				}*/
+				testData3.get(i).label.setValue(0, (float) maxj);
 			}
 	
 			DataWriter.writeLabelsToFile("image_prediction.txt", testData3);
