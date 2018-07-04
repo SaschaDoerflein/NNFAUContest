@@ -11,6 +11,7 @@ public class Main
 {
 	public static void main(String[] args) throws IOException
 	{
+		TestHelper th = new TestHelper(new SimpleAccuracyFunction());
 		
 		int[] test = {1,1,0};
 		
@@ -19,8 +20,6 @@ public class Main
 			int iterations = 1000;
 			int epochs = 1;
 			float learningRate = 0.0001f;
-			
-			TestHelper th = new TestHelper(new SimpleAccuracyFunction());
 			
 			//Here you can create more networks to see if there is a varianz in the output networks. 
 			Network[] networks = new Network[epochs];
@@ -73,7 +72,7 @@ public class Main
 			int epochs = 1;
 			float learningRate = 0.0000000007f;
 			
-			TestHelper th = new TestHelper(new SimpleAccuracyFunction());
+		
 			
 			//Here you can create more networks to see if there is a varianz in the output networks. 
 			Network[] networks = new Network[epochs];
@@ -129,8 +128,6 @@ public class Main
 			int epochs = 1;
 			float learningRate = 0.0000001f;
 			
-			TestHelper th = new TestHelper(new SimpleAccuracyFunction());
-			
 			//Here you can create more networks to see if there is a varianz in the output networks. 
 			Network[] networks = new Network[epochs];
 			
@@ -174,4 +171,36 @@ public class Main
 			
 		}
 	}
+	
+	
+	private Network[] BuildNetworks(int numInputLayers, int minMiddleLayers, int maxMiddleLAyers, int numOuputLayers) {
+		//Take all Learning rates
+		Network n1 =new Network(new VariantLearningRate(learningRate,iterations));
+		Network n2 = new Network(new ConstantLearningRate(learningRate));
+		
+		
+		
+		
+		
+	}
+	
+	
+	
+	
+	/*
+	 * In this section there tests to find the optimum over night ;)
+	 */
+	
+	
+	//Probiere alle möglichkeiten von min nach max aus (kann leicht für weitere Functionen erweitert werden.
+	private void intoTheBlue(int maxLayers, int minLayers, ArrayList<ActivationFunction> afList, ArrayList<LearningRate> lrList, int maxIterations, int minIterations, int iterationStepSize) {
+		
+	}
+	
+	//Try to get best learningRate between max and min
+	private void intoTheBlueLearningRate(float max, float min) {
+		
+	}
+	
+	
 }
