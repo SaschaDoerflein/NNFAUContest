@@ -285,11 +285,17 @@ public class DataReader
 
 	    while(count<fileData.length)
 	    {
-	    	Datum dataTemp=new Datum(32,32,3,1);
+	    	Datum dataTemp; //=new Datum(32,32,3,6);
 			if(isTrainingset==true)
 			{
-				dataTemp.label.setValue(0, fileData[count]);
+				dataTemp = new Datum(32,32,3,6);
+				for (int i = 0; i < 6; i++) {
+					dataTemp.label.setValue(i, 0f);
+					if (fileData[count]==i)	dataTemp.label.setValue(i, 1f);
+				}
 				count++;
+			} else {
+				dataTemp = new Datum(32,32,3,1);
 			}
 		    for(int c=0;c<3;c++)
 		    {
