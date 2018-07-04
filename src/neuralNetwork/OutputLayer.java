@@ -21,6 +21,8 @@ public class OutputLayer implements Layer
 	Blob tempOut;
 
 	int execution;
+	//Prevents updateWeight until exPre
+	int executionPrevent;
 	Blob tempW;
 	Blob tempB;
    public Blob forward(Blob inputBlob)
@@ -52,7 +54,7 @@ public class OutputLayer implements Layer
 	      }
 
 	      execution++;
-	      if(execution==16)
+	      if(execution==executionPrevent)
 	      {
 
 	      	for (int j=0;j<neuronDelta.getLength();j++)
@@ -94,9 +96,10 @@ public class OutputLayer implements Layer
    }
 
    /** Constructor. */
-   public OutputLayer(LossFunction loss, ActivationFunction func, WeightFiller fillerWeight, BiasFiller fillerBias, int in, int out)
+   public OutputLayer(LossFunction loss, ActivationFunction func, WeightFiller fillerWeight, BiasFiller fillerBias, int in, int out, int executionPrevent)
    {
-      execution=0;
+      this.executionPrevent=executionPrevent;
+      execution = 0;
      		tempW=new Blob(in,out);
       	tempB=new Blob(out);
      		tempOut=new Blob(out);

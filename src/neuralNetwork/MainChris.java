@@ -27,7 +27,7 @@ public class MainChris
 			}*/
 			
 			//n.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 600, 60));
-			n.add(new OutputLayer(new EuclideanLoss(),new LinearActivation(), new RandomWeight(), new ConstantBias(), 6, 1));
+			n.add(new OutputLayer(new EuclideanLoss(),new LinearActivation(), new RandomWeight(), new ConstantBias(), 6, 1, 16));
 			
 			
 			for(int j=0;j<iterations;j++)
@@ -90,7 +90,7 @@ public class MainChris
 			n2.add(new InputLayer(26));
 			//n2.add(new FullyConnected(new SigmoidActivation(), new RandomWeight(), new ConstantBias(), 26, 40));
 			//n2.add(new FullyConnected(new SigmoidActivation(), new RandomWeight(), new ConstantBias(), 40, 10));
-			n2.add(new OutputLayer(new EuclideanLoss(), new LinearActivation(), new RandomWeight(), new ConstantBias(), 26, 6));
+			n2.add(new OutputLayer(new EuclideanLoss(), new LinearActivation(), new RandomWeight(), new ConstantBias(), 26, 6, 16));
 	
 			for(int j=0;j<iterations2;j++)
 			{
@@ -148,14 +148,14 @@ public class MainChris
 			Network n2=new Network(new ConstantLearningRate(0.01f));
 	
 			n2.add(new InputLayer(32*32*3));
-			n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 32*32*3, 256));
-			n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 256, 128));
-			n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 128, 64));
-			n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 64, 32));
-			n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 32, 16));
-			n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 16, 8));
+			n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 32*32*3, 256, 16));
+			n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 256, 128, 16));
+			n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 128, 64, 16));
+			n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 64, 32, 16));
+			n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 32, 16, 16));
+			n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 16, 8, 16));
 			//n2.add(new FullyConnected(new SigmoidActivation(), new RandomWeight(), new ConstantBias(), 40, 10));
-			n2.add(new OutputLayer(new EuclideanLoss(), new LinearActivation(), new RandomWeight(), new ConstantBias(), 8, 1));
+			n2.add(new OutputLayer(new EuclideanLoss(), new LinearActivation(), new RandomWeight(), new ConstantBias(), 8, 1, 16));
 			int iterations = 1000;
 			int length3 = dataAndLabel3.size();
 			for(int j=0;j<iterations;j++)

@@ -73,7 +73,7 @@ public class Testcases
 
 	static boolean testCaseFullyConnectedForward()
 	{
-		Layer f=new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 3, 5);
+		Layer f=new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 3, 5, 16);
 		Blob weights=new Blob(3,5);
 		Blob bias=new Blob(5);
 
@@ -109,7 +109,7 @@ public class Testcases
 
 	static boolean testCaseOutputBackward()
 	{
-		Layer f=new OutputLayer(new EuclideanLoss(), new TanhActivation(), new RandomWeight(), new ConstantBias(), 3, 2);
+		Layer f=new OutputLayer(new EuclideanLoss(), new TanhActivation(), new RandomWeight(), new ConstantBias(), 3, 2, 16);
 		Blob weights=new Blob(3,2);
 		Blob bias=new Blob(2);
 		Blob out = new Blob(2);
@@ -154,7 +154,7 @@ public class Testcases
 		Network n=new Network(new ConstantLearningRate(0.05f));
 
 		n.add(new InputLayer(2));
-		n.add(new OutputLayer(new EuclideanLoss(),new LinearActivation(), new RandomWeight(), new ConstantBias(), 2, 1));
+		n.add(new OutputLayer(new EuclideanLoss(),new LinearActivation(), new RandomWeight(), new ConstantBias(), 2, 1, 16));
 
 		for(int j=0;j<10000;j++)
 		{
@@ -187,9 +187,9 @@ public class Testcases
 		Network n=new Network(new ConstantLearningRate(0.05f));
 
 		n.add(new InputLayer(2));
-		n.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 2, 3));
-		n.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 3, 3));
-		n.add(new OutputLayer(new EuclideanLoss(),new LinearActivation(), new RandomWeight(), new ConstantBias(), 3, 1));
+		n.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 2, 3, 16));
+		n.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 3, 3, 16));
+		n.add(new OutputLayer(new EuclideanLoss(),new LinearActivation(), new RandomWeight(), new ConstantBias(), 3, 1, 16));
 
 		for(int j=0;j<20000;j++)
 		{
@@ -222,9 +222,9 @@ public class Testcases
 		Network n=new Network(new ConstantLearningRate(0.01f));
 
 		n.add(new InputLayer(2));
-		n.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 2, 6));
-		n.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 6, 5));
-		n.add(new OutputLayer(new EuclideanLoss(),new LinearActivation(), new RandomWeight(), new ConstantBias(), 5, 4));
+		n.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 2, 6, 16));
+		n.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 6, 5, 16));
+		n.add(new OutputLayer(new EuclideanLoss(),new LinearActivation(), new RandomWeight(), new ConstantBias(), 5, 4, 16));
 
 		for(int j=0;j<20000;j++)
 		{

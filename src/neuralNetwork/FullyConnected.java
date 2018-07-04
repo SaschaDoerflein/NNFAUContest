@@ -16,9 +16,10 @@ public class FullyConnected implements Layer
 	Blob bias;
 	// You may need a temporary variable for partially processed output (if you do not need this variable, just ignore it)
 	Blob tempOut;
-
-
-		int execution;
+	
+	int execution;
+	//Prevents updateWeight until exPre
+	int executionPrevent;
 	Blob tempW;
 	Blob tempB;
    public Blob forward(Blob inputBlob)
@@ -63,7 +64,7 @@ public class FullyConnected implements Layer
 	      }
 
 	     	execution++;
-	      if(execution==1)
+	      if(execution==executionPrevent)
 	      {
 
 	      	for (int j=0;j<neuronDelta.getLength();j++)
@@ -80,9 +81,10 @@ public class FullyConnected implements Layer
 	      }
 	}
 
-	public FullyConnected(ActivationFunction func, WeightFiller fillerWeight,BiasFiller fillerBias , int in, int out)
+	public FullyConnected(ActivationFunction func, WeightFiller fillerWeight,BiasFiller fillerBias , int in, int out, int executionPrevent)
 	{
-	   execution=0;
+		this.executionPrevent = executionPrevent;
+		execution=0;
 	        		tempW=new Blob(in,out);
       	tempB=new Blob(out);
 	   	tempOut=new Blob(out);
