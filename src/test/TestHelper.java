@@ -10,40 +10,26 @@ import neuralNetwork.Datum;
 import neuralNetwork.Network;
 
 public class TestHelper {
-	
-	AccuracyFunction af;
+	private int count;
+	private AccuracyFunction af;
 	
 	public TestHelper(AccuracyFunction af) {
 		this.af = af;
 	}
 	
 	//Write every result from every iterations separated in epochs into a output file
-	public void performTest(Network[] networks, int iterations,String fileName, int option) {
-		System.out.println("------------"+fileName+"------------");
+	public void performTest(Network[] networks, int iterations, ArrayList<Datum> dataAndLabel) {
+		count++;
+		System.out.println("------------Starting Test"+count+"------------");
 		float[] realErrors = new float[networks.length];
 		float[] variances = new float[networks.length];
 		int[][] errorClassesArray = new int[networks.length][];
-		
-		
-			//Data 	
-			ArrayList<Datum> dataAndLabel=null;
-			try {
-				if (option == 1) {
-					dataAndLabel = DataReader.readTitanicDataset(fileName,true);
-				}else if(option == 2) {
-					dataAndLabel = DataReader.readTraveltimeDataset(fileName,true);
-				}else if (option == 3) {
-					dataAndLabel = DataReader.getImageDataset(fileName,true);
-				}
-				
 			
-			int length = dataAndLabel.size();
-			
-			
+		int length = dataAndLabel.size();	
 			
 			//Normalisation
 			//TODO: Sascha 4.7.  Should be good but makes thinks worse :(
-			
+			/*
 			int lenOfBlob = dataAndLabel.get(0).data.values.length;	
 			float[] maxes = new float[lenOfBlob];
 			
@@ -63,7 +49,7 @@ public class TestHelper {
 					b.values[n] = b.values[n]/maxes[n];
 				}
 			}
-			
+			*/
 			
 			//Iteration
 			for(int e=0; e<networks.length; e++) {
@@ -87,7 +73,7 @@ public class TestHelper {
 						for(int h=0;h<out.getLength();h++)
 						{
 						 	//System.out.print(out.getValue(h)+" ");
-						 	result.add(out.getValue(h)*maxes[h]);
+						 	result.add(out.getValue(h));//Sascha 7.4. if normalization is on: *maxes[h]
 						}
 
 						//System.out.print("vs. ");
@@ -120,15 +106,9 @@ public class TestHelper {
 			af.printSimpleErrorClasses();
 			af.setExpected(new ArrayList<Float>());
 			af.setResult(new ArrayList<Float>());
-			System.out.println(System.lineSeparator());
-			
-		
-		
+			System.out.println(System.lineSeparator());			
 		}
-			} catch (IOException ee) {
-				// TODO Auto-generated catch block
-				ee.printStackTrace();
-			}
+			
 		
 		/*
 		 * TODO: For test file? We can't compute any variance because we have no expected values!

@@ -12,7 +12,7 @@ public class Main
 	public static void main(String[] args) throws IOException
 	{
 		
-		int[] test = {0,1,0};
+		int[] test = {1,1,0};
 		
 		
 		if (test[0]==1) {
@@ -36,12 +36,14 @@ public class Main
 					n.add(new FullyConnected(new SigmoidActivation(), new RandomWeight(), new ConstantBias(), 6, 6));
 				}
 				
-				n.add(new OutputLayer(new EuclideanLoss(),new LinearActivation(), new RandomWeight(), new ConstantBias(), 6, 1));
+				n.add(new OutputLayer(new EuclideanLoss(),new SigmoidActivation(), new RandomWeight(), new ConstantBias(), 6, 1));
 				networks[i] = n;
 			}
 			
 			
-			th.performTest(networks, iterations,"titanic_training.txt",1);
+			ArrayList<Datum> dataAndLabel = dataAndLabel = DataReader.readTitanicDataset("titanic_training.txt",true);
+
+			th.performTest(networks, iterations,dataAndLabel);
 			
 			/* TODO: prediction make no sense right now because we have no expected value
 			 * 
@@ -89,7 +91,13 @@ public class Main
 				n.add(new OutputLayer(new EuclideanLoss(),new LinearActivation(), new RandomWeight(), new ConstantBias(), 26, 6));
 				networks[i] = n;
 			}
-			th.performTest(networks, iterations,"rta_training.txt",2);
+			
+		
+			ArrayList<Datum> dataAndLabel = DataReader.readTraveltimeDataset("rta_training.txt",true);
+		
+		
+			
+			th.performTest(networks, iterations,dataAndLabel);
 	/*
 			ArrayList<Datum> testData2=DataReader.readTraveltimeDataset("rta_test1.txt",false);
 	
@@ -139,7 +147,10 @@ public class Main
 				n.add(new OutputLayer(new EuclideanLoss(), new LinearActivation(), new RandomWeight(), new ConstantBias(), 32*32*3, 1));
 				networks[i] = n;
 			}
-			th.performTest(networks, iterations,"image_training.bin",3);
+			
+			ArrayList<Datum> dataAndLabel = DataReader.getImageDataset("image_training.bin",true);
+			
+			th.performTest(networks,iterations,dataAndLabel);
 		
 			/*
 			 * ArrayList<Datum> testData3=DataReader.getImageDataset("image_test1.bin",false);
