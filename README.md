@@ -6,7 +6,8 @@
 2...
 
 **Log File Sascha**
-7.4.
+
+**7.4.**
 TestHelper und AccuracyFunction: Varianz und andere Kleinigkeiten werden ausgegeben. 
 Main: Epochen hinzugefügt um zB verschiedene Anzahl Layers/Gewichte leichter zu vergleichen
 Normalisation in TestHelper: Habe ich versucht, hat die Varianzen erhöt :(
