@@ -28,5 +28,13 @@ SigmoidFunction: Ich hab die Funktion auf 0 bis 1 gedeckelt Ergebnis:
 
 **Log File Chris**
 
+**4.Jul
+
+Test 1 ~80 Acc mit Outputlayer Standard RandomW und Bias, Tanh und LearningRate ~0.0002f  (2 Hidden Layer verbessern auf 81%...noch was möglich?)
+
+Test 3 hat nun in meiner main One-Hot-Encoding, dafür hab ich den Datareader angepasst
+
+Alle Tests in meiner main sind lauffähig/getestet i.e prediction online
+
 **Log File Benny**
 
