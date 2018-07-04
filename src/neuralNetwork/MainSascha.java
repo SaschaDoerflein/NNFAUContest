@@ -7,7 +7,7 @@ import test.TestHelper;
 
 import java.io.*;
 
-public class Main
+public class MainSascha
 {
 	public static void main(String[] args) throws IOException
 	{
@@ -172,35 +172,19 @@ public class Main
 		}
 	}
 	
-	
-	private Network[] BuildNetworks(int numInputLayers, int minMiddleLayers, int maxMiddleLAyers, int numOuputLayers) {
+	//Build all possible Networks
+	private Network[] BuildNetworks(int numInputLayers, int minMiddleLayers, int maxMiddleLAyers, int numOuputLayers,
+			ArrayList<ActivationFunction> afList, ArrayList<BiasFiller> bfiller, int maxIterations, int minIterations, int iterationStepSize) {
 		//Take all Learning rates
-		Network n1 =new Network(new VariantLearningRate(learningRate,iterations));
-		Network n2 = new Network(new ConstantLearningRate(learningRate));
+
 		
 		
-		
-		
+		return null;
 		
 	}
 	
 	
-	
-	
-	/*
-	 * In this section there tests to find the optimum over night ;)
-	 */
-	
-	
-	//Probiere alle möglichkeiten von min nach max aus (kann leicht für weitere Functionen erweitert werden.
-	private void intoTheBlue(int maxLayers, int minLayers, ArrayList<ActivationFunction> afList, ArrayList<LearningRate> lrList, int maxIterations, int minIterations, int iterationStepSize) {
-		
-	}
-	
-	//Try to get best learningRate between max and min
-	private void intoTheBlueLearningRate(float max, float min) {
-		
-	}
+
 	
 	
 }
