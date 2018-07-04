@@ -16,7 +16,7 @@ public class Main
 		
 		
 		if (test[0]==1) {
-			int iterations = 1000;
+			int iterations = 1001;
 			int epochs = 1;
 			float learningRate = 0.0001f;
 			
