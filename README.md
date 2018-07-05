@@ -37,6 +37,9 @@ SigmoidFunction: Ich hab die Funktion auf 0 bis 1 gedeckelt Ergebnis:
      
 
 **Log File Chris**
+**5.Jul**
+
+Inverse InputLayer out = 1/in , near zero: out = in
 
 **4.Jul**
 
