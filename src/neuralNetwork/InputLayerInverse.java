@@ -13,10 +13,13 @@ public class InputLayerInverse implements Layer
 	   {
 		  float temp;
 		  for (int i = 0; i < output.values.length; i++) {
+			  /*
 			  output.values[i] = 0f;
 			  temp = inputBlob.getValue(i);
 			  if (temp > 0.0000001 || temp < 0.0000001) output.values[i] = 1/inputBlob.getValue(i);
 			  else output.values[i] = inputBlob.getValue(i);
+			  */
+			  output.values[i] = inputBlob.getValue(i)/2000;
 		  }
 	      return output;
 	   }
