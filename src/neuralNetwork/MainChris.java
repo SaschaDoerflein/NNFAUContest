@@ -1,6 +1,9 @@
 package neuralNetwork;
 import java.io.IOException;
 import java.util.*;
+
+import test.SimpleAccuracyFunction;
+
 import java.io.*;
 
 public class MainChris
@@ -82,50 +85,79 @@ public class MainChris
 		---------------------------------------------------*/
 		if (test[1] == 1) {
 			ArrayList<Datum> dataAndLabel2=DataReader.readTraveltimeDataset("rta_training.txt",true);
+			SimpleAccuracyFunction saf = new SimpleAccuracyFunction();
+			ArrayList<Float> result = new ArrayList<Float>();
+			ArrayList<Float> expected = new ArrayList<Float>();
 			
-			int iterations2 = 100;
-			Network n2=new Network(new ConstantLearningRate(0.0007f));
+			int iterations2 = 30000;
+			Network n2=new Network(new ConstantLearningRate(0.00003f));
 			//Network n2=new Network(new VariantLearningRate(0.0001f,iterations2,1,null));
 	
 			n2.add(new InputLayerInverse(26));
-			n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 26, 16, 50));
-			n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 16, 16, 50));
-			n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 16, 16, 50));
-			n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 16, 16, 50));
-			n2.add(new FullyConnected(new SigmoidActivation(), new RandomWeight(), new ConstantBias(), 16, 16, 50));
-			n2.add(new OutputLayerInverse(new EuclideanLoss(), new LinearActivation(), new RandomWeight(), new ConstantBias(), 16, 6, 50));
-	
+			n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 26, 13, 50));
+			for (int i = 0; i < 12; i++) {
+				n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 13, 13, 50));
+			}
+			n2.add(new OutputLayer(new EuclideanLoss(), new LinearActivation(2000,0), new RandomWeight(), new ConstantBias(), 13, 6, 50));
+			float temp = 0;
+			float var = 0;
+			int count = dataAndLabel2.size();
+			float maxvar = 0;
+			float minvar = 1000;
+			int show = 5;
 			for(int j=0;j<iterations2;j++)
 			{
-				if ((j > 10 && j%(iterations2/10)==0) || j < 3) System.out.println("Iteration: "+j) ;
+				if ((j > 10 && j%(iterations2/100)==0) || j < 3) System.out.println("Iteration: "+j) ;
 	
 				for(int i=0;i<dataAndLabel2.size();i++)
 				{
 					int idx=i;
 					Blob out=n2.trainSimpleSGD(dataAndLabel2.get(idx).data, dataAndLabel2.get(idx).label);
 	
-					if((j==iterations2-1 || j<3 || ( j > 500 && j%1000==0)) && i<10)
+					if((j==iterations2-1 || j<3 || ( j > 200 && j%(iterations2/100)==0)) && i<count)
 					{
-	
+						if (j > 10 && j%(iterations2/10)==0 || j==iterations2-1) show = 5;
+						//System.out.println("Iteration: "+j);
 						for(int h=0;h<out.getLength();h++)
 						{
-						 	System.out.print(out.getValue(h)+" ");
+							result.add(out.getValue(h));
+							if (i<show) System.out.print(out.getValue(h)+" ");
 						}
 	
-						System.out.print("vs. ");
+						if (i<show) System.out.print("vs. ");
 	
 						for(int h=0;h<dataAndLabel2.get(idx).label.getLength();h++)
 						{
-						 	System.out.print(dataAndLabel2.get(idx).label.getValue(h)+" ");
+							expected.add(dataAndLabel2.get(idx).label.getValue(h));
+							if (i < show) System.out.print(dataAndLabel2.get(idx).label.getValue(h)+" ");
 						}
-						System.out.println();
+						saf.setExpected(expected);
+						saf.setResult(result);
+						var = saf.mse();
+						if (i<show) System.out.println(var);
+						if (var > maxvar) maxvar = var;
+						if (var < minvar) minvar = var;
+						temp+=var;						
+						result.clear();
+						expected.clear();
 					}
 				}
+				if((j==iterations2-1 || j<3 || ( j > 500 && j%(iterations2/100)==0))) {
+					System.out.println("var = " + temp/count);
+					System.out.println("maxvar = " + maxvar);
+					System.out.println("minvar = " + minvar);
+					temp = 0;
+					maxvar = 0;
+					minvar = 1000;
+				}
+				show = 0;
 			}
+			
 	
 			ArrayList<Datum> testData2=DataReader.readTraveltimeDataset("rta_test1.txt",false);
 			
 			float tempval;
+			//System.out.println(testData2.size());
 			for(int i=0;i<testData2.size();i++)
 			{
 				Blob out[]=n2.forward(testData2.get(i).data);
