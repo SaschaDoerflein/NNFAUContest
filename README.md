@@ -1,8 +1,7 @@
 # NNFAUContest
 **TODO:**
 
-RandomWeigths (evtl. Inteface) anpassen, sodass man nicht jedes mal in der Klasse Magic Numbers ändern muss
-^^gleiches für constbias
+Die lineare activierungsfunktion kann man nun skalieren für test 2...die weights würd ich wahrscheinlich lassen;
 
 Netz/Layers anpassen:
 
