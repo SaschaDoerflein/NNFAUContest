@@ -22,13 +22,18 @@ public class SimpleAccuracyFunction implements AccuracyFunction{
 
 			 float diff = result.get(i)-expected.get(i);
 			 diff = Math.abs(diff);
-			 diff = diff *10;
+			 diff = diff; //*10;
 			 diff = diff * diff;
 		     var += diff;
 		    }
 	
 		
 		return var/(float)result.size();
+	}
+	
+	public float mse() {
+		float temp = computeVar();
+		return (float) Math.sqrt(computeVar())*6f;
 	}
 	
 	//Compute Real Error 
