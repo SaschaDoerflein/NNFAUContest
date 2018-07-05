@@ -38,6 +38,8 @@ SigmoidFunction: Ich hab die Funktion auf 0 bis 1 gedeckelt Ergebnis:
 **Log File Chris**
 **5.Jul**
 
+InverseInputLayer besser skalieren zb. /2000 im trying something
+
 Inverse InputLayer out = 1/in , near zero: out = in
 
 **4.Jul**
