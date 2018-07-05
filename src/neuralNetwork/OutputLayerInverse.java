@@ -38,7 +38,7 @@ public class OutputLayerInverse implements Layer
 			sum+=inputBlob.getValue(i)*weights.getValue(i,j);
       	}
 		tempOut.setValue(j,sum+bias.getValue(j));
-        output.values[j]=func.compute(tempOut.getValue(j))*1000;
+        output.values[j]=func.compute(tempOut.getValue(j));
 	}
 	return output;
    }
