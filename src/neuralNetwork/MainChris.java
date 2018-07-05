@@ -1,6 +1,9 @@
 package neuralNetwork;
 import java.io.IOException;
 import java.util.*;
+
+import test.SimpleAccuracyFunction;
+
 import java.io.*;
 
 public class MainChris
@@ -8,7 +11,7 @@ public class MainChris
 	public static void main(String[] args) throws IOException
 	{
 		//Testcases.doTestcases();
-		int[] test = {0,0,1};
+		int[] test = {0,1,0};
 
 		/*---------------------------------------------------
 		------ Example NeuralNet using Titanic-Dataset ------
@@ -82,8 +85,8 @@ public class MainChris
 		---------------------------------------------------*/
 		if (test[1] == 1) {
 			ArrayList<Datum> dataAndLabel2=DataReader.readTraveltimeDataset("rta_training.txt",true);
-			
-			int iterations2 = 1;
+			SimpleAccuracyFunction sacc = new SimpleAccuracyFunction();
+			int iterations2 = 100000;
 			Network n2=new Network(new ConstantLearningRate(0.0007f));
 			//Network n2=new Network(new VariantLearningRate(0.0001f,iterations2,1,null));
 	
@@ -97,14 +100,14 @@ public class MainChris
 	
 			for(int j=0;j<iterations2;j++)
 			{
-				if ((j > 10 && j%(iterations2/10)==0) || j < 3) System.out.println("Iteration: "+j) ;
+				if ((j > 10 && j%1000==0) || j < 3) System.out.println("Iteration: "+j) ;
 	
 				for(int i=0;i<dataAndLabel2.size();i++)
 				{
 					int idx=i;
 					Blob out=n2.trainSimpleSGD(dataAndLabel2.get(idx).data, dataAndLabel2.get(idx).label);
 	
-					if((j==iterations2-1 || j<3 || ( j > 500 && j%(iterations2/10)==0)) && i<10)
+					if((j==iterations2-1 || j<3 || ( j > 500 && j%1000==0)) && i<60)
 					{
 	
 						for(int h=0;h<out.getLength();h++)
@@ -118,9 +121,26 @@ public class MainChris
 						{
 						 	System.out.print(dataAndLabel2.get(idx).label.getValue(h)+" ");
 						}
-						System.out.println();
+						//System.out.println();
+						
+						ArrayList<Float> result = new ArrayList<Float>();
+						ArrayList<Float> expected = new ArrayList<Float>();
+						for (int k = 0; k < out.getLength(); k++) {
+							result.add(out.getValue(k));
+							expected.add(dataAndLabel2.get(idx).label.getValue(k));
+						}
+						sacc.setResult(result);
+						sacc.setExpected(expected);
+						System.out.println(sacc.computeVar());
+						result.clear();
+						expected.clear();
 					}
+				
+					
 				}
+				
+				//Compute Variance
+				//public float computeVar() {
 			}
 	
 			ArrayList<Datum> testData2=DataReader.readTraveltimeDataset("rta_test1.txt",false);
