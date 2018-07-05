@@ -8,7 +8,7 @@ public class MainChris
 	public static void main(String[] args) throws IOException
 	{
 		//Testcases.doTestcases();
-		int[] test = {0,0,1};
+		int[] test = {0,1,0};
 
 		/*---------------------------------------------------
 		------ Example NeuralNet using Titanic-Dataset ------
@@ -83,17 +83,17 @@ public class MainChris
 		if (test[1] == 1) {
 			ArrayList<Datum> dataAndLabel2=DataReader.readTraveltimeDataset("rta_training.txt",true);
 			
-			int iterations2 = 1;
+			int iterations2 = 100;
 			Network n2=new Network(new ConstantLearningRate(0.0007f));
 			//Network n2=new Network(new VariantLearningRate(0.0001f,iterations2,1,null));
 	
-			n2.add(new InputLayer(26));
+			n2.add(new InputLayerInverse(26));
 			n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 26, 16, 50));
 			n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 16, 16, 50));
 			n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 16, 16, 50));
 			n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 16, 16, 50));
 			n2.add(new FullyConnected(new SigmoidActivation(), new RandomWeight(), new ConstantBias(), 16, 16, 50));
-			n2.add(new OutputLayer(new EuclideanLoss(), new LinearActivation(), new RandomWeight(), new ConstantBias(), 16, 6, 50));
+			n2.add(new OutputLayerInverse(new EuclideanLoss(), new LinearActivation(), new RandomWeight(), new ConstantBias(), 16, 6, 50));
 	
 			for(int j=0;j<iterations2;j++)
 			{
@@ -104,7 +104,7 @@ public class MainChris
 					int idx=i;
 					Blob out=n2.trainSimpleSGD(dataAndLabel2.get(idx).data, dataAndLabel2.get(idx).label);
 	
-					if((j==iterations2-1 || j<3 || ( j > 500 && j%(iterations2/10)==0)) && i<10)
+					if((j==iterations2-1 || j<3 || ( j > 500 && j%1000==0)) && i<10)
 					{
 	
 						for(int h=0;h<out.getLength();h++)
@@ -136,6 +136,7 @@ public class MainChris
 			}
 
 			DataWriter.writeLabelsToFile("rta_prediction.txt", testData2);
+			System.out.println("done");
 		}
 		
 		/*---------------------------------------------------
