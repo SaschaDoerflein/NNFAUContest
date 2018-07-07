@@ -131,7 +131,24 @@ public class LSTMCell implements Layer
 
 	public void updateWeightsAndBias(Blob inputBlob, float learningRate)
 	{
-		
+		for (int vj = 0; vj < cellOut.getLength(); vj++) {
+			for (int k = 0; k < delta.getLength(); k++) {
+				weights.addValue(k, vj, learningRate*delta.getValue(k)*cellOut.getValue(vj));
+			}
+		}
+		for (int j = 0; j < netInGate.width;j++) {
+			for (int m = 0; m < inputBlob.getLength(); m++) {
+				weightsOutputGate.addValue(j, m, learningRate*deltaOut.getValue(j)*inputBlob.getValue(m));
+			}
+		}
+		for (int j = 0; j < netInGate.width; j++ ) {
+			for (int m = 0; m < inputBlob.getLength(); m++) {
+				float sum = 0f;
+				for (int vj = 0; vj < cellOut.getLength(); vj++) {
+					sum += err.getValue(vj)*
+				}
+			}
+		}
 		
 		for (int j=0;j<neuronDelta.getLength();j++)
 	      {
