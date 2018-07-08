@@ -13,14 +13,14 @@ public class SigmoidActivation implements ActivationFunction
 		public float derivative(float x) 
 		{
 			float sigm = compute(x);
-			float result = sigm/((float)1-sigm);
+			float result = sigm*((float)1-sigm);
 
-			if (result<0) {
+			/*if (result<0) {
 				result = 0;
 			}
 			if (result > 1) {
 				result = 1;
-			}
+			}*/
 			return result;
 		}
 }
