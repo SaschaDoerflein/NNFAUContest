@@ -89,22 +89,24 @@ public class MainChris
 			ArrayList<Float> result = new ArrayList<Float>();
 			ArrayList<Float> expected = new ArrayList<Float>();
 			
-			int iterations2 = 200000;
+			int iterations2 = 200;
+			
 			Network n2=new Network(new ConstantLearningRate(0.00003f));
 			//Network n2=new Network(new VariantLearningRate(0.0001f,iterations2,1,null));
-	
-			n2.add(new InputLayerInverse(26));
-			n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 26, 13, 50));
+			n2.add(new LSTMCell(new RandomWeight(), new ConstantBias(), 1, 1, 2, 1));
+			//n2.add(new InputLayerInverse(26));
+			//n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 26, 13, 50));
 			
 			//n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 13, 13, 50));
 			//n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 13, 13, 50));
 			//n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 13, 13, 50));
 			//n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 13, 13, 50));
 			//n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 13, 13, 50));
-			n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 13, 13, 50));
-			n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 13, 13, 50));
-			n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 13, 13, 50));
-			n2.add(new OutputLayer(new EuclideanLoss(), new LinearActivation(2000,0), new RandomWeight(), new ConstantBias(), 13, 6, 50));
+			//n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 13, 13, 50));
+			//n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 13, 13, 50));
+			//n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 13, 13, 50));
+		
+			//n2.add(new OutputLayer(new EuclideanLoss(), new LinearActivation(2000,0), new RandomWeight(), new ConstantBias(), 13, 6, 50));
 			float temp = 0;
 			float var = 0;
 			int count = dataAndLabel2.size();
@@ -118,7 +120,8 @@ public class MainChris
 				for(int i=0;i<dataAndLabel2.size();i++)
 				{
 					int idx=i;
-					Blob out=n2.trainSimpleSGD(dataAndLabel2.get(idx).data, dataAndLabel2.get(idx).label);
+					Blob out = n2.trainLSTM(dataAndLabel2.get(idx).data, dataAndLabel2.get(idx).label);
+					//Blob out=n2.trainSimpleSGD(dataAndLabel2.get(idx).data, dataAndLabel2.get(idx).label);
 	
 					if((j==iterations2-1 || j<3 || ( j > 200 && j%(iterations2/100)==0)) && i<count)
 					{
