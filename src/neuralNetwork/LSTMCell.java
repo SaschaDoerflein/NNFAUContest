@@ -39,7 +39,7 @@ public class LSTMCell implements Layer
 	// loss Function;
 	LossFunction loss;
 	// Activation function for neurons
-	ActivationFunction func;
+	//ActivationFunction func;
 	// The output of each neuron after applying activation functions etc.
 	Blob output;
 	// derivative of the output units
@@ -107,7 +107,7 @@ public class LSTMCell implements Layer
 	  float[] lossReturn = loss.derivative(expectedOutput, output);
       for (int k=0;k<expectedOutput.getLength();k++)
       {
-     		delta.setValue(k,lossReturn[k] * func.derivative(tempOut.getValue(k)));
+     		delta.setValue(k,lossReturn[k] * f.derivative(tempOut.getValue(k)));
       }
       for (int j = 0; j < netOutf.getLength(); j++) {
     	  
@@ -164,11 +164,12 @@ public class LSTMCell implements Layer
 		}
 	}
 
-	public LSTMCell(WeightFiller fillerWeight, BiasFiller fillerBias , int blocks, int cells,  int in, int out, int executionPrevent)
+	public LSTMCell(WeightFiller fillerWeight, BiasFiller fillerBias , int blocks, int cells,  int in, int out)
 	{
 		this.f = new SigmoidActivation();
 		this.g = new Sigmoid2();
 		this.h = new Sigmoid4();
+		this.bias = new Blob(blocks);
 		for(int i=0;i<bias.getLength();i++) {
 			bias.setValue(i,fillerBias.compute(i, in, out));
 		}
@@ -192,6 +193,7 @@ public class LSTMCell implements Layer
 		this.deltaIn = new Blob(blocks,in,cells);
 		this.deltaCell = new Blob(blocks,in,cells);
 		output=new Blob(out);
+		this.tempOut = new Blob(out);
 		bias=new Blob(blocks);
 		for(int j=0;j<blocks;j++) {
 			for(int m=0;m<in;m++) {
