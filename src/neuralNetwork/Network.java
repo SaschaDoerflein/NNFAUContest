@@ -83,10 +83,12 @@ public class Network
 		   forward0[i+in.getLength()] = new Blob(1);
 		   forward0[i+in.getLength()].setValue(0, out.getValue(i));
 	   }
+	   float currRate=learningRate.getLearningRate();
 	   for(int i=0;i<in.getLength()+out.getLength()-1;i++)
 	   {
 		   forward2[i+1] = layers.get(0).forward(forward[i]);
 		   layers.get(0).backward(forward0[i+1], null);
+		   layers.get(0).updateWeightsAndBias(forward[i], currRate);
 		   forward[i+1].setValue(1, forward2[i+1].getValue(0));
 	   }
 	   for (int i = 0; i < out.getLength(); i++) {
