@@ -23,4 +23,22 @@ public class SigmoidActivation implements ActivationFunction
 			}*/
 			return result;
 		}
+		//sigmoid range -1-1
+		public float computeh(float x)
+		{
+			return (float) ((2f / (1f + Math.exp(-x)))-1f);
+		}
+		public float derivativeh(float x) 
+		{
+			return derivative(x)*2;
+		}
+		//sigmoid range -2-2
+		public float computeg(float x)
+		{
+			return (float) ((4f / (1f + Math.exp(-x)))-2f);
+		}
+		public float derivativeg(float x) 
+		{
+			return derivative(x)*4;
+		}
 }
