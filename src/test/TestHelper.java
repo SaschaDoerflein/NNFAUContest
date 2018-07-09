@@ -283,13 +283,17 @@ public class TestHelper {
 																		
 																		//Store Result
 																		StringBuilder sb = new StringBuilder();
-																		sb.append(realError+" "+variance+" ");
+																		sb.append(realError+"/"+variance+" ");
 																		
 																		for(int i=0;i<errorClasses.length;i++) {
 																			sb.append(errorClasses[i]+" ");
 																		}
 																		
+																		sb.append("HLayers: ");
+																		
 																		sb.append(currentHiddenLayer+" ");
+																		
+																		
 																		
 																		for(int i=0; i<hiddenConnections.length;i++) {
 																			sb.append(hiddenConnections[i]+" ");
@@ -338,11 +342,13 @@ public class TestHelper {
 																			st = br.readLine();
 																			br.close();
 																			if (st != null) {
+																				System.out.println(sb);
 																				st = st.substring(0, st.indexOf(" "));
 																				float oldVariance = Float.parseFloat(st);
 																				if(variance < oldVariance) {
 																					FileWriter fw2 = new FileWriter(file2.getAbsolutePath());
 																					BufferedWriter bw2 = new BufferedWriter( fw );
+																					
 																					bw2.write( sb.toString());
 																					bw2.close( );
 																					fw2.close();
@@ -353,9 +359,6 @@ public class TestHelper {
 																				bw2.write( sb.toString());
 																				
 																			}
-																			
-																			
-																			
 																		}
 																		catch( IOException e )
 																		{
@@ -366,11 +369,7 @@ public class TestHelper {
 																		//clean
 																		af.setExpected(new ArrayList<Float>());
 																		af.setResult(new ArrayList<Float>());
-																		
-																		
-																		
-																		
-																		
+
 																		hiddenConnections[pivotElement]++;
 																	}
 																	pivotElement++;
