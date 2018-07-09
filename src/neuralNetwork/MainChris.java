@@ -89,11 +89,12 @@ public class MainChris
 			ArrayList<Float> result = new ArrayList<Float>();
 			ArrayList<Float> expected = new ArrayList<Float>();
 			
-			int iterations2 = 200;
+			int iterations2 = 1000;
 			
-			Network n2=new Network(new ConstantLearningRate(0.00003f));
+			Network n2=new Network(new ConstantLearningRate(0.05f));
 			//Network n2=new Network(new VariantLearningRate(0.0001f,iterations2,1,null));
-			n2.add(new LSTMCell(new RandomWeight(), new ConstantBias(), 1, 1, 2, 1));
+			//LSTMCell(WeightFiller fillerWeight, BiasFiller fillerBias , int blocks, int cells,  int in, int out)
+			n2.add(new LSTMCell(new RandomWeight(), new ConstantBias(), 2, 10, 1, 1));
 			//n2.add(new InputLayerInverse(26));
 			//n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 26, 13, 50));
 			
@@ -107,15 +108,17 @@ public class MainChris
 			//n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 13, 13, 50));
 		
 			//n2.add(new OutputLayer(new EuclideanLoss(), new LinearActivation(2000,0), new RandomWeight(), new ConstantBias(), 13, 6, 50));
+			int early = 0;
 			float temp = 0;
 			float var = 0;
+			float varOld = 0;
 			int count = dataAndLabel2.size();
 			float maxvar = 0;
 			float minvar = 1000;
 			int show = 5;
 			for(int j=0;j<iterations2;j++)
 			{
-				if ((j > 10 && j%(iterations2/100)==0) || j < 3) System.out.println("Iteration: "+j) ;
+				if ((j > 9 && j%(iterations2/100)==0) || j < 5) System.out.println("Iteration: "+j) ;
 	
 				for(int i=0;i<dataAndLabel2.size();i++)
 				{
@@ -123,9 +126,9 @@ public class MainChris
 					Blob out = n2.trainLSTM(dataAndLabel2.get(idx).data, dataAndLabel2.get(idx).label);
 					//Blob out=n2.trainSimpleSGD(dataAndLabel2.get(idx).data, dataAndLabel2.get(idx).label);
 	
-					if((j==iterations2-1 || j<3 || ( j > 200 && j%(iterations2/100)==0)) && i<count)
+					if((j==iterations2-1 || j<5 || ( j > 9 && j%(iterations2/100)==0)) && i<count)
 					{
-						if (j > 10 && j%(iterations2/10)==0) show = 5;
+						if (j > 9 && j%(iterations2/100)==0) show = 5;
 						if (j==iterations2-1) show = 150;
 						//System.out.println("Iteration: "+j);
 						for(int h=0;h<out.getLength();h++)
@@ -152,13 +155,18 @@ public class MainChris
 						expected.clear();
 					}
 				}
-				if((j==iterations2-1 || j<3 || ( j > 500 && j%(iterations2/100)==0))) {
+				
+				if((j==iterations2-1 || j<5 || ( j > 9 && j%(iterations2/100)==0))) {
+					if (Math.abs(temp/count - varOld/count) < 1) early++;
+					if (early == 5) j = iterations2-2;
 					System.out.println("var = " + temp/count);
 					System.out.println("maxvar = " + maxvar);
 					System.out.println("minvar = " + minvar);
+					varOld = temp;
 					temp = 0;
 					maxvar = 0;
 					minvar = 1000;
+					
 				}
 				show = 0;
 			}
@@ -170,9 +178,14 @@ public class MainChris
 			//System.out.println(testData2.size());
 			for(int i=0;i<testData2.size();i++)
 			{
-				Blob out[]=n2.forward(testData2.get(i).data);
+				/*Blob out[]=n2.forward(testData2.get(i).data);
 				for (int j = 0; j < out[out.length-1].getLength();j++) {
 					tempval = Math.round(out[out.length-1].getValue(j));
+					testData2.get(i).label.setValue(j,tempval);
+					*/
+				Blob out=n2.forwardLSTM(testData2.get(i).data);
+				for (int j = 0; j < out.getLength();j++) {
+					tempval = Math.round(out.getValue(j));
 					testData2.get(i).label.setValue(j,tempval);
 				}
 			}
