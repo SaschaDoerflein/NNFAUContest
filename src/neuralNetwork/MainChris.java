@@ -11,16 +11,16 @@ public class MainChris
 	public static void main(String[] args) throws IOException
 	{
 		//Testcases.doTestcases();
-		int[] test = {0,1,0};
+		int[] test = {0,0,1};
 
 		/*---------------------------------------------------
 		------ Example NeuralNet using Titanic-Dataset ------
 		---------------------------------------------------*/
 		if (test[0] == 1) {
 			ArrayList<Datum> dataAndLabel=DataReader.readTitanicDataset("titanic_training.txt",true);
-			int iterations = 1000000;
+			int iterations = 1000;
 			int length = dataAndLabel.size();
-			Network n=new Network(new VariantLearningRate(0.00005f,iterations,1,null));
+			Network n=new Network(new VariantLearningRate(0.0005f,iterations,1,null));
 			//Network n=new Network(new ConstantLearningRate(0.001f));
 	
 			n.add(new InputLayer(6));
@@ -89,12 +89,12 @@ public class MainChris
 			ArrayList<Float> result = new ArrayList<Float>();
 			ArrayList<Float> expected = new ArrayList<Float>();
 			
-			int iterations2 = 1000;
+			int iterations2 = 10;
 			
-			Network n2=new Network(new ConstantLearningRate(0.05f));
+			Network n2=new Network(new ConstantLearningRate(0.01f));
 			//Network n2=new Network(new VariantLearningRate(0.0001f,iterations2,1,null));
 			//LSTMCell(WeightFiller fillerWeight, BiasFiller fillerBias , int blocks, int cells,  int in, int out)
-			n2.add(new LSTMCell(new RandomWeight(), new ConstantBias(), 2, 10, 1, 1));
+			n2.add(new LSTMCell(new RandomWeight(), new ConstantBias(), 1, 1, 2, 1));
 			//n2.add(new InputLayerInverse(26));
 			//n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 26, 13, 50));
 			
@@ -157,7 +157,7 @@ public class MainChris
 				}
 				
 				if((j==iterations2-1 || j<5 || ( j > 9 && j%(iterations2/100)==0))) {
-					if (Math.abs(temp/count - varOld/count) < 1) early++;
+					if (Math.abs(temp/count - varOld/count) < 0.5) early++;
 					if (early == 5) j = iterations2-2;
 					System.out.println("var = " + temp/count);
 					System.out.println("maxvar = " + maxvar);
@@ -204,14 +204,14 @@ public class MainChris
 			Network n2=new Network(new ConstantLearningRate(0.01f));
 	
 			n2.add(new InputLayer(32*32*3));
-			n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 32*32*3, 256, 16));
-			n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 256, 128, 16));
-			n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 128, 64, 16));
-			n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 64, 32, 16));
-			n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 32, 16, 16));
-			n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 16, 8, 16));
+			n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 32*32*3, 6, 16));
+			//n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 256, 128, 16));
+			//n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 128, 64, 16));
+			//n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 64, 32, 16));
+			//n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 32, 16, 16));
+			//n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 16, 8, 16));
 			//n2.add(new FullyConnected(new SigmoidActivation(), new RandomWeight(), new ConstantBias(), 40, 10));
-			n2.add(new OutputLayer(new EuclideanLoss(), new LinearActivation(), new RandomWeight(), new ConstantBias(), 8, 6, 16));
+			n2.add(new OutputLayer(new EuclideanLoss(), new LinearActivation(), new RandomWeight(), new ConstantBias(), 6, 6, 16));
 			int iterations = 1;
 			int length3 = dataAndLabel3.size();
 			for(int j=0;j<iterations;j++)
@@ -278,8 +278,10 @@ public class MainChris
 						maxtempval = tempval;
 						maxj = j;
 					}
+					
 				}
-				testData3.get(i).label.setValue(0, (float) maxj);
+				testData3.get(i).label.setValue(0, (float) 6f);
+				maxtempval = 0;
 			}
 	
 			DataWriter.writeLabelsToFile("image_prediction.txt", testData3);
