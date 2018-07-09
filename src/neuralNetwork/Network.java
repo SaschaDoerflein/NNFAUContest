@@ -71,6 +71,8 @@ public class Network
 	   Blob[] forward=new Blob[in.getLength()+6];
 	   Blob[] forward2=new Blob[in.getLength()+6];
 	   Blob forward3 = new Blob(6);
+	   Blob reset = new Blob(1);
+	   reset.setValue(0, 1);
 	   //forward[0].set=in.getValue(0);
 	   float div = 4000;
 	   for(int i=0;i<in.getLength();i++)
@@ -79,6 +81,7 @@ public class Network
 		   forward[i].setValue(0, in.getValue(i)/div);
 		   forward0[i] = new Blob(1);
 		   forward0[i].setValue(0, in.getValue(i)/div);
+		   
 	   }
 	   for(int i=0;i<6;i++)
 	   {
@@ -87,7 +90,7 @@ public class Network
 		   forward0[i+in.getLength()] = new Blob(1);
 		   //forward0[i+in.getLength()].setValue(0, out.getValue(i)/div);
 	   }
-	   float currRate=learningRate.getLearningRate();
+	   float currRate=0;
 	   for(int i=0;i<in.getLength();i++)
 	   {
 		   forward2[i+1] = layers.get(0).forward(forward[i]);
@@ -102,6 +105,7 @@ public class Network
 		   forward[i+1].setValue(0, forward2[i+1].getValue(0));
 		   forward[i+1].setValue(1, forward2[i+1].getValue(0));
 	   }
+	   layers.get(0).backward(reset,reset);
 	   for (int i = 0; i < 6; i++) {
 		   forward3.setValue(i, forward[i+in.getLength()].getValue(1)*div);
 	   }
@@ -113,6 +117,8 @@ public class Network
 	   Blob[] forward=new Blob[in.getLength()+out.getLength()];
 	   Blob[] forward2=new Blob[in.getLength()+out.getLength()];
 	   Blob forward3 = new Blob(out.getLength());
+	   Blob reset = new Blob(1);
+	   reset.setValue(0, 1);
 	   //forward[0].set=in.getValue(0);
 	   float div = 4000;
 	   for(int i=0;i<in.getLength();i++)
@@ -137,6 +143,7 @@ public class Network
 		   layers.get(0).updateWeightsAndBias(forward[i], currRate);
 		   forward[i+1].setValue(1, forward2[i+1].getValue(0));
 	   }
+	   layers.get(0).backward(reset,reset);
 	   for (int i = 0; i < out.getLength(); i++) {
 		   forward3.setValue(i, forward[i+in.getLength()].getValue(1)*div);
 	   }
