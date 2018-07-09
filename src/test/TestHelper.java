@@ -1,7 +1,9 @@
 package test;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -144,8 +146,7 @@ public class TestHelper {
 			ArrayList<LossFunction> lfList, ArrayList<WeightFiller> wfList, ArrayList<BiasFiller> bfList,
 			int minExcecutionPrevent, int maxExcecutionPrevent, int excecutionPreventStepSize) {
 		
-		ArrayList<Float> result = af.getResult();
-		ArrayList<Float> expected = af.getExpected();
+		
 		
 		//**Variables**
 		//You can compute how many loops the bruteForceTrainingRuns 
@@ -196,7 +197,7 @@ public class TestHelper {
 							for(float currentFactor = minFactor; currentFactor < maxFactor; currentFactor += factorStepSize) {
 								for(int currentActivationFunction = 0; currentActivationFunction < activationFunctions.size(); currentActivationFunction++) {
 									for(int currentExcecutionPrevent = minExcecutionPrevent; currentExcecutionPrevent< maxExcecutionPrevent; currentExcecutionPrevent += excecutionPreventStepSize) {
-									for(int currentOutputLeft = minOutputCountLeft; currentOutputLeft < maxOutputCountLeft; currentOutputLeft++) {
+									//for(int currentOutputLeft = minOutputCountLeft; currentOutputLeft < maxOutputCountLeft; currentOutputLeft++) {
 										for(int currentHiddenLayer = minHiddenLayers; currentHiddenLayer < maxHiddenLayers; currentHiddenLayer++) {
 											for(int currentlfList = 0; currentlfList < lfList.size(); currentlfList++) {
 												for(int currentwfList = 0; currentwfList < wfList.size(); currentwfList++) {
@@ -207,7 +208,7 @@ public class TestHelper {
 														int[] hiddenConnections = null;
 
 														if(minHiddenLayers > 0) {
-															hiddenConnections = new int[currentHiddenLayer-1];
+															hiddenConnections = new int[currentHiddenLayer];
 															for(int i = 0; i < hiddenConnections.length; i++) {
 																hiddenConnections[i] = minHiddenCount;
 															}
@@ -216,6 +217,10 @@ public class TestHelper {
 																while(hiddenConnections[hiddenConnections.length-1]< maxHiddenCount) {
 																	while(hiddenConnections[pivotElement] < maxHiddenCount) {
 																		
+																		af = new SimpleAccuracyFunction();
+																		
+																		ArrayList<Float> result = af.getResult();
+																		ArrayList<Float> expected = af.getExpected();
 																		
 																		//Set Objects
 																		LossFunction lossFunction = lfList.get(currentlfList);
@@ -229,41 +234,46 @@ public class TestHelper {
 																		//Build Network
 																		Network network = new Network(variantLearningRate);
 
+																		//TODO: When I add one layers there are 9 layers=null in the list :/
 																		network.add(new InputLayer(inputCount));
 																		
-																		for(int hidden=1; hidden<currentHiddenLayer; hidden++) {
+																		for(int hidden=1; hidden<=currentHiddenLayer+1; hidden++) {
 																			//Just when in and out are same number
 																			//You have #hidden-1 numbers of connections=#con    + input and output connection
 																			//there are #con over currentHidden-minHidden combinations
 																			if (hidden == 1) {
 																				network.add(new FullyConnected(activationFunction,weightFiller,biasFiller,inputCount,hiddenConnections[hidden-1],currentExcecutionPrevent));
-																			}else if (hidden == currentHiddenLayer-1) {
-																				network.add(new FullyConnected(activationFunction,weightFiller,biasFiller,hiddenConnections[hidden-1],outputCountRight,currentExcecutionPrevent));
+																			}else if (hidden == currentHiddenLayer+1) {
+																				network.add(new OutputLayer(lossFunction,activationFunction,weightFiller,biasFiller,hiddenConnections[hidden-3],outputCountRight,currentExcecutionPrevent));
 																			}else {
-																				network.add(new FullyConnected(activationFunction,weightFiller,biasFiller,hiddenConnections[hidden-1],hiddenConnections[hidden],currentExcecutionPrevent));
+																				network.add(new FullyConnected(activationFunction,weightFiller,biasFiller,hiddenConnections[hidden-2],hiddenConnections[hidden-1],currentExcecutionPrevent));
 																			}
 																			
 																		}
 																		
-																		network.add(new OutputLayer(lossFunction,activationFunction, weightFiller, biasFiller, currentOutputLeft, outputCountRight, currentExcecutionPrevent));
+																		//network.add(new OutputLayer(lossFunction,activationFunction, weightFiller, biasFiller, currentOutputLeft, outputCountRight, currentExcecutionPrevent));
 																		
 																		
 																		//Perform Test
-																		
-																		for(int i = 0; i<length; i++) {
-																			Blob out=network.trainSimpleSGD(dataAndLabel.get(i).data, dataAndLabel.get(i).label);
-																			
-																			for(int h=0;h<out.getLength();h++)
-																			{
-																				result.add(out.getValue(h));
+																		Blob out=null;
+																		for(int iter=0 ; iter < currentIteration; iter++) {
+																			for(int i = 0; i<length; i++) {
+																				out=network.trainSimpleSGD(dataAndLabel.get(i).data, dataAndLabel.get(i).label);
+																				if (iter == currentIteration-1) {
+																					for(int h=0;h<out.getLength();h++)
+																					{
+																						result.add(out.getValue(h));
+																					}
+																
+																					for(int h=0;h<dataAndLabel.get(i).label.getLength();h++)
+																					{
+																						expected.add(dataAndLabel.get(i).label.getValue(h));
+																					}
+																				}
+																				
 																			}
-														
-																			for(int h=0;h<dataAndLabel.get(i).label.getLength();h++)
-																			{
-																				expected.add(dataAndLabel.get(i).label.getValue(h));
-																			}
-																			
 																		}
+																		
 																		
 																		float realError = af.computeRealError();
 																		float variance = af.computeVar();
@@ -291,25 +301,61 @@ public class TestHelper {
 																		sb.append(currentFactor+" ");
 																		sb.append(currentActivationFunction+" ");
 																		sb.append(currentExcecutionPrevent+" ");
-																		sb.append(currentOutputLeft+" ");
+																		//sb.append(currentOutputLeft+" ");
 																		sb.append(currentlfList+" ");
 																		sb.append(currentwfList+" ");
 																		sb.append(currentbfList);//Don't forget the space
 																		
+																		System.out.println("Performed test "+sb.toString());
+																		
 																		try
 																		{
+																			//List of all results
 																			File file = new File("results.txt");
-
+																			//Just store the best variance result
+																			File file2 = new File("result.txt");
 																			// if file doesnt exists, then create it 
 																			if ( ! file.exists( ) )
 																			{
+																				
 																				file.createNewFile( );
 																			}
+																			if ( ! file2.exists( ) )
+																			{
+																				
+																				file2.createNewFile( );
+																			}
 
-																			FileWriter fw = new FileWriter( file.getAbsoluteFile( ) );
+																			FileWriter fw = new FileWriter( file.getAbsoluteFile( ) ,true);
 																			BufferedWriter bw = new BufferedWriter( fw );
-																			bw.write( sb.toString() );
+																			bw.write( sb.toString());
 																			bw.close( );
+																			
+																			FileReader fr = new FileReader(file2.getAbsolutePath());
+																			BufferedReader br = new BufferedReader(fr);
+																			 
+																			String st;
+																			st = br.readLine();
+																			br.close();
+																			if (st != null) {
+																				st = st.substring(0, st.indexOf(" "));
+																				float oldVariance = Float.parseFloat(st);
+																				if(variance < oldVariance) {
+																					FileWriter fw2 = new FileWriter(file2.getAbsolutePath());
+																					BufferedWriter bw2 = new BufferedWriter( fw );
+																					bw2.write( sb.toString());
+																					bw2.close( );
+																					fw2.close();
+																				}
+																			}else {
+																				FileWriter fw2 = new FileWriter(file2.getAbsolutePath());
+																				BufferedWriter bw2 = new BufferedWriter( fw );
+																				bw2.write( sb.toString());
+																				
+																			}
+																			
+																			
+																			
 																		}
 																		catch( IOException e )
 																		{
@@ -350,7 +396,7 @@ public class TestHelper {
 												}
 											}
 										}
-									}
+									//}
 									}
 								}
 							}

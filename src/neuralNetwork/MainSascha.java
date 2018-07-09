@@ -21,7 +21,7 @@ public class MainSascha
 		
 		float minStartRate=1, maxStartRate=2, startRateStepSize=1f;
 		
-		int minIterations=100, maxIterations=1000, iterationsStepSize=10;
+		int minIterations=1000, maxIterations=1001, iterationsStepSize=1;
 		
 		float minFactor=1, maxFactor=2, factorStepSize=1;
 		
