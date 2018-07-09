@@ -15,11 +15,11 @@ public class MainBenny {
 		//Define Variables for brute force
 		String nameOfTrainingsData = "image_training.bin";
 		
-		float minLearningRate = 0.00005f, maxLearningRate = 0.001f, learningRateStepSize = 0.00005f;
+		float minLearningRate = 0.0005f, maxLearningRate = 0.001f, learningRateStepSize = 0.0005f;
 		
 		float minStartRate=1, maxStartRate=2, startRateStepSize=1f;
 		
-		int minIterations=100, maxIterations=101, iterationsStepSize=1;
+		int minIterations=500, maxIterations=501, iterationsStepSize=1;
 		
 		float minFactor=1, maxFactor=2, factorStepSize=1;
 		
@@ -32,7 +32,7 @@ public class MainBenny {
 		
 		int inputCount=32*32*3, outputCountRight=6; //In and out is fix!
 		int minHiddenLayers=2, maxHiddenLayers=6;
-		int minHiddenCount=2, maxHiddenCount=32*32*3;
+		int minHiddenCount=8, maxHiddenCount=32*32*3;
 		
 		ArrayList<LossFunction> lfList = new ArrayList<>();
 		lfList.add(new EuclideanLoss());
