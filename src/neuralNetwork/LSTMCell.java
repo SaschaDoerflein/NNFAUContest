@@ -109,6 +109,12 @@ public class LSTMCell implements Layer
 
    public Blob backward (Blob expectedOutput, Blob weightsBefore)
    {
+	  if (weightsBefore != null) {
+		  if (weightsBefore.getValue(0) == 1) {
+			  reset();
+			  return null;
+		  }
+	  }
 	  float[] lossReturn = loss.derivative(expectedOutput, output);
       for (int k=0;k<expectedOutput.getLength();k++)
       {
@@ -167,7 +173,7 @@ public class LSTMCell implements Layer
 				weightsInputGate.addValue(j, m, learningRate*sum);
 			}
 		}
-		counter++;
+		/*counter++;
 		if (counter == reset) {
 			for (int i = 0; i < state.getLength(); i++) {
 				state.setValue(i, 0);
@@ -177,6 +183,16 @@ public class LSTMCell implements Layer
 				deltaIn.setValue(i, 0);
 			}
 			counter = 0;
+		}*/
+	}
+	
+	public void reset() {
+		for (int i = 0; i < state.getLength(); i++) {
+			state.setValue(i, 0);
+		}
+		for (int i = 0; i < deltaCell.getLength(); i++) {
+			deltaCell.setValue(i, 0);
+			deltaIn.setValue(i, 0);
 		}
 	}
 
