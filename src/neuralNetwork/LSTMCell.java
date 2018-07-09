@@ -56,6 +56,11 @@ public class LSTMCell implements Layer
 	Blob bias;
 	// You may need a temporary variable for partially processed output (if you do not need this variable, just ignore it)
 	Blob tempOut;
+	//reset state, deltaCell, deltaIn
+	int reset;
+	//reset counter
+	int counter;
+	
    public Blob forward(Blob inputBlob) {
 	   
       for (int j = 0; j < netInGate.width;j++) {
@@ -115,7 +120,7 @@ public class LSTMCell implements Layer
 		  for (int v = 0; v < weightsInputCell.channels; v++) {
     		  float sum1 = 0f;
 	    	  for (int k = 0; k < delta.getLength(); k++) {
-	    		  sum1 += weights.getValue(k,j,v)*delta.getValue(k);
+	    		  sum1 += weights.getValue(k,weightsInputGate.height+j+v*netInGate.width)*delta.getValue(k);
 	    	  }
 	    	  sum2 += h.compute(state.getValue(j,v))*sum1;
 		  }
@@ -141,7 +146,7 @@ public class LSTMCell implements Layer
 		     }
 		     for (int j = 0; j < netInGate.width;j++) {    	  
 			     for (int v = 0; v < weightsInputCell.channels; v++) {
-			    	 weights.addValue(k, inputBlob.getLength()+j+v*netInGate.width, learningRate*delta.getValue(k)*cellOut.getValue(v,j));		      
+			    	 weights.addValue(k, inputBlob.getLength()+j+v*netInGate.width, learningRate*delta.getValue(k)*cellOut.getValue(j,v));		      
 		    	 }
 		     }
 		}
@@ -162,10 +167,23 @@ public class LSTMCell implements Layer
 				weightsInputGate.addValue(j, m, learningRate*sum);
 			}
 		}
+		counter++;
+		if (counter == reset) {
+			for (int i = 0; i < state.getLength(); i++) {
+				state.setValue(i, 0);
+			}
+			for (int i = 0; i < deltaCell.getLength(); i++) {
+				deltaCell.setValue(i, 0);
+				deltaIn.setValue(i, 0);
+			}
+			counter = 0;
+		}
 	}
 
 	public LSTMCell(WeightFiller fillerWeight, BiasFiller fillerBias , int blocks, int cells,  int in, int out)
 	{
+		this.reset = in+out-1;
+		this.counter = 0;
 		this.f = new SigmoidActivation();
 		this.g = new Sigmoid2();
 		this.h = new Sigmoid4();
