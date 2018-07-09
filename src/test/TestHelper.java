@@ -140,7 +140,7 @@ public class TestHelper {
 			float minFactor, float maxFactor,float factorStepSize,
 			ArrayList<ActivationFunction> activationFunctions,
 			int inputCount, int outputCountRight, 
-			int minOutputCountLeft, int maxOutputCountLeft,
+		/*	int minOutputCountLeft, int maxOutputCountLeft,*/
 			int minHiddenLayers, int maxHiddenLayers,
 			int minHiddenCount, int maxHiddenCount,
 			ArrayList<LossFunction> lfList, ArrayList<WeightFiller> wfList, ArrayList<BiasFiller> bfList,
@@ -151,6 +151,7 @@ public class TestHelper {
 		//**Variables**
 		//You can compute how many loops the bruteForceTrainingRuns 
 		//Beware allCombinations shouldn't be greater than 2 hoch Integer.MaxInteger()
+		/*
 		BigInteger learningRateCombinations =  BigInteger.valueOf((long) ((maxLearningRate - minLearningRate)/learningRateStepSize));
 		BigInteger startrateCombinations =  BigInteger.valueOf((long) ((maxStartRate - minStartRate)/startRateStepSize));
 		BigInteger iterationCombinations =  BigInteger.valueOf((long) ((maxIterations - minIterations)/iterationsStepSize));
@@ -182,10 +183,10 @@ public class TestHelper {
 		
 		BigInteger thisCombination = new BigInteger("1");
 		final BigInteger oneBigInteger = new BigInteger("1");
-		
+		*/
 		//Get Data
 		try {
-			ArrayList<Datum> dataAndLabel = DataReader.readTitanicDataset(nameOfTrainingsData,true);
+			ArrayList<Datum> dataAndLabel = DataReader.getImageDataset(nameOfTrainingsData,true);
 			int length = dataAndLabel.size();
 			
 			//while(!allCombinations.equals(thisCombination)) {
@@ -244,7 +245,7 @@ public class TestHelper {
 																			if (hidden == 1) {
 																				network.add(new FullyConnected(activationFunction,weightFiller,biasFiller,inputCount,hiddenConnections[hidden-1],currentExcecutionPrevent));
 																			}else if (hidden == currentHiddenLayer+1) {
-																				network.add(new OutputLayer(lossFunction,activationFunction,weightFiller,biasFiller,hiddenConnections[hidden-3],outputCountRight,currentExcecutionPrevent));
+																				network.add(new OutputLayer(lossFunction,new LinearActivation(),weightFiller,biasFiller,hiddenConnections[hidden-3],outputCountRight,currentExcecutionPrevent));
 																			}else {
 																				network.add(new FullyConnected(activationFunction,weightFiller,biasFiller,hiddenConnections[hidden-2],hiddenConnections[hidden-1],currentExcecutionPrevent));
 																			}
@@ -279,8 +280,6 @@ public class TestHelper {
 																		float variance = af.computeVar();
 																		int[] errorClasses = af.computeSimpleErrorClasses();
 																		
-																		
-																		
 																		//Store Result
 																		StringBuilder sb = new StringBuilder();
 																		sb.append(realError+"/"+variance+" ");
@@ -293,11 +292,13 @@ public class TestHelper {
 																		
 																		sb.append(currentHiddenLayer+" ");
 																		
-																		
+																		sb.append("In: "+inputCount+" ");
 																		
 																		for(int i=0; i<hiddenConnections.length;i++) {
 																			sb.append(hiddenConnections[i]+" ");
 																		}
+																		
+																		sb.append("Out: "+outputCountRight+" ");
 																		
 																		sb.append(currentLearningRate+" ");
 																		sb.append(currentStartRate+" ");
@@ -315,9 +316,9 @@ public class TestHelper {
 																		try
 																		{
 																			//List of all results
-																			File file = new File("results.txt");
+																			File file = new File("results_"+nameOfTrainingsData.substring(0, nameOfTrainingsData.length()-4)+".txt");
 																			//Just store the best variance result
-																			File file2 = new File("result.txt");
+																			File file2 = new File("result_"+nameOfTrainingsData.substring(0, nameOfTrainingsData.length()-4)+".txt");
 																			// if file doesnt exists, then create it 
 																			if ( ! file.exists( ) )
 																			{
@@ -342,21 +343,23 @@ public class TestHelper {
 																			st = br.readLine();
 																			br.close();
 																			if (st != null) {
-																				System.out.println(sb);
-																				st = st.substring(0, st.indexOf(" "));
+																		
+																				st = st.substring(0, st.indexOf("/"));
 																				float oldVariance = Float.parseFloat(st);
-																				if(variance < oldVariance) {
+																				if(realError < oldVariance || (!Float.isNaN(realError) && Float.isNaN(oldVariance))) {
 																					FileWriter fw2 = new FileWriter(file2.getAbsolutePath());
-																					BufferedWriter bw2 = new BufferedWriter( fw );
+																					BufferedWriter bw2 = new BufferedWriter( fw2 );
 																					
 																					bw2.write( sb.toString());
 																					bw2.close( );
-																					fw2.close();
+																			
 																				}
 																			}else {
 																				FileWriter fw2 = new FileWriter(file2.getAbsolutePath());
-																				BufferedWriter bw2 = new BufferedWriter( fw );
+																				BufferedWriter bw2 = new BufferedWriter( fw2 );
 																				bw2.write( sb.toString());
+																				bw2.close( );
+																			
 																				
 																			}
 																		}
