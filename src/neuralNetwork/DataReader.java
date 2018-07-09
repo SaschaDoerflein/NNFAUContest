@@ -291,7 +291,10 @@ public class DataReader
 				dataTemp = new Datum(32,32,3,6);
 				for (int i = 0; i < 6; i++) {
 					dataTemp.label.setValue(i, 0f);
-					if (fileData[count]==i)	dataTemp.label.setValue(i, 1f);
+					if (fileData[count]==i)	{
+						dataTemp.label.setValue(i, 1f);
+						System.out.println(i);
+					}
 				}
 				count++;
 			} else {
@@ -303,7 +306,7 @@ public class DataReader
 			    {
 			    	for(int x=0;x<32;x++)
 				    {
-				    	dataTemp.data.setValue(x,y,c,(float)fileData[count]);
+				    	dataTemp.data.setValue(x,y,c,(float)fileData[count]/255);
 				    	count++;
 				    }
 			    }
