@@ -89,7 +89,7 @@ public class MainChris
 			ArrayList<Float> result = new ArrayList<Float>();
 			ArrayList<Float> expected = new ArrayList<Float>();
 			
-			int iterations2 = 1000;
+			int iterations2 = 300;
 			
 			Network n2=new Network(new ConstantLearningRate(0.001f));
 			//Network n2=new Network(new VariantLearningRate(0.0001f,iterations2,1,null));
