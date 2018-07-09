@@ -11,7 +11,7 @@ public class MainChris
 	public static void main(String[] args) throws IOException
 	{
 		//Testcases.doTestcases();
-		int[] test = {0,0,1};
+		int[] test = {0,1,0};
 
 		/*---------------------------------------------------
 		------ Example NeuralNet using Titanic-Dataset ------
@@ -89,9 +89,9 @@ public class MainChris
 			ArrayList<Float> result = new ArrayList<Float>();
 			ArrayList<Float> expected = new ArrayList<Float>();
 			
-			int iterations2 = 10;
+			int iterations2 = 1000;
 			
-			Network n2=new Network(new ConstantLearningRate(0.01f));
+			Network n2=new Network(new ConstantLearningRate(0.001f));
 			//Network n2=new Network(new VariantLearningRate(0.0001f,iterations2,1,null));
 			//LSTMCell(WeightFiller fillerWeight, BiasFiller fillerBias , int blocks, int cells,  int in, int out)
 			n2.add(new LSTMCell(new RandomWeight(), new ConstantBias(), 1, 1, 2, 1));
