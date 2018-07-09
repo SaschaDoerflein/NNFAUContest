@@ -26,9 +26,13 @@ public class SimpleAccuracyFunction implements AccuracyFunction{
 			 diff = diff * diff;
 		     var += diff;
 		    }
-	
-		
-		return var/(float)result.size();
+		 
+		 float length = (float)result.size();
+		 float result =  var/length;
+		if(Float.isInfinite(result) || Float.isNaN(result)) {
+			return Float.MAX_VALUE;
+		}
+		return result;
 	}
 	
 	public float mse() {

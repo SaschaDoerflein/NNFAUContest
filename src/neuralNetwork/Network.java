@@ -14,6 +14,7 @@ public class Network
    public Network(LearningRate learningRate)
    {
 	   this.learningRate=learningRate;
+	  
 	   layers=new ArrayList<Layer>();
    }
 
@@ -21,6 +22,8 @@ public class Network
    public void add(Layer l)
    {
 	   layers.add(l);
+	  
+	  
    }
 
    // Forwards an input through the network
