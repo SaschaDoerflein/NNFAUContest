@@ -74,7 +74,7 @@ public class Network
 	   Blob reset = new Blob(1);
 	   reset.setValue(0, 1);
 	   //forward[0].set=in.getValue(0);
-	   float div = 4000;
+	   float div = 10000;
 	   for(int i=0;i<in.getLength();i++)
 	   {
 		   forward[i] = new Blob(2);
@@ -120,7 +120,7 @@ public class Network
 	   Blob reset = new Blob(1);
 	   reset.setValue(0, 1);
 	   //forward[0].set=in.getValue(0);
-	   float div = 4000;
+	   float div = 10000;
 	   for(int i=0;i<in.getLength();i++)
 	   {
 		   forward[i] = new Blob(2);
