@@ -293,7 +293,7 @@ public class DataReader
 					dataTemp.label.setValue(i, 0f);
 					if (fileData[count]==i)	{
 						dataTemp.label.setValue(i, 1f);
-						System.out.println(i);
+						//System.out.println(i);
 					}
 				}
 				count++;
