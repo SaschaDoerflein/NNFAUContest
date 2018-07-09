@@ -20,6 +20,7 @@ public class LSTMCell implements Layer
 	ActivationFunction g;
 	// Activation function Sigmoid -1-1
 	ActivationFunction h;
+	ActivationFunction linear;
 	// Net after Input gate
 	Blob netInGate;
 	// Net after Input gate befor sigmoid
@@ -103,6 +104,7 @@ public class LSTMCell implements Layer
       }
       tempOut.setValue(k, out);
       output.setValue(k, f.compute(out));
+      output.setValue(k, linear.compute(output.getValue(k)));
     }
 	return output;
    }
@@ -200,6 +202,7 @@ public class LSTMCell implements Layer
 	{
 		this.reset = in+out-1;
 		this.counter = 0;
+		this.linear = new LinearActivation(0.3f,0f);
 		this.f = new SigmoidActivation();
 		this.g = new Sigmoid2();
 		this.h = new Sigmoid4();
