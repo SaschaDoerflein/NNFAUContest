@@ -72,38 +72,38 @@ public class Network
 	   Blob[] forward2=new Blob[in.getLength()+6];
 	   Blob forward3 = new Blob(6);
 	   //forward[0].set=in.getValue(0);
-	   float div = 3000;
+	   float div = 4000;
 	   for(int i=0;i<in.getLength();i++)
 	   {
-		   forward[i] = new Blob(1);
+		   forward[i] = new Blob(2);
 		   forward[i].setValue(0, in.getValue(i)/div);
 		   forward0[i] = new Blob(1);
 		   forward0[i].setValue(0, in.getValue(i)/div);
 	   }
 	   for(int i=0;i<6;i++)
 	   {
-		   forward[i+in.getLength()] = new Blob(1);
+		   forward[i+in.getLength()] = new Blob(2);
 		   //forward[i+in.getLength()].setValue(0, out.getValue(i)/div);
 		   forward0[i+in.getLength()] = new Blob(1);
 		   //forward0[i+in.getLength()].setValue(0, out.getValue(i)/div);
 	   }
 	   float currRate=learningRate.getLearningRate();
-	   for(int i=0;i<in.getLength()+6-1;i++)
+	   for(int i=0;i<in.getLength();i++)
 	   {
 		   forward2[i+1] = layers.get(0).forward(forward[i]);
-		   layers.get(0).backward(forward0[i+1], null);
-		   layers.get(0).updateWeightsAndBias(forward[i], currRate);
-		   forward0[i+1].setValue(0, forward2[i+1].getValue(0));
+		   //layers.get(0).backward(forward0[i+1], null);
+		   //layers.get(0).updateWeightsAndBias(forward[i], currRate);
+		   forward[i+1].setValue(1, forward2[i+1].getValue(0));
 	   }
-	   /*for (int i=in.getLength()-1;i<in.getLength()+6-1;i++) {
+	   for (int i=in.getLength()-1;i<in.getLength()+6-1;i++) {
 		   forward2[i+1] = layers.get(0).forward(forward[i]);
-		   layers.get(0).backward(forward0[i+1], null);
-		   layers.get(0).updateWeightsAndBias(forward[i], currRate);
+		   //layers.get(0).backward(forward0[i+1], null);
+		   //layers.get(0).updateWeightsAndBias(forward[i], currRate);
 		   forward[i+1].setValue(0, forward2[i+1].getValue(0));
 		   forward[i+1].setValue(1, forward2[i+1].getValue(0));
-	   }*/
+	   }
 	   for (int i = 0; i < 6; i++) {
-		   forward3.setValue(i, forward0[i+in.getLength()].getValue(0)*div);
+		   forward3.setValue(i, forward[i+in.getLength()].getValue(1)*div);
 	   }
 	   return forward3;
    }
@@ -114,17 +114,17 @@ public class Network
 	   Blob[] forward2=new Blob[in.getLength()+out.getLength()];
 	   Blob forward3 = new Blob(out.getLength());
 	   //forward[0].set=in.getValue(0);
-	   float div = 3000;
+	   float div = 4000;
 	   for(int i=0;i<in.getLength();i++)
 	   {
-		   forward[i] = new Blob(1);
+		   forward[i] = new Blob(2);
 		   forward[i].setValue(0, in.getValue(i)/div);
 		   forward0[i] = new Blob(1);
 		   forward0[i].setValue(0, in.getValue(i)/div);
 	   }
 	   for(int i=0;i<out.getLength();i++)
 	   {
-		   forward[i+in.getLength()] = new Blob(1);
+		   forward[i+in.getLength()] = new Blob(2);
 		   forward[i+in.getLength()].setValue(0, out.getValue(i)/div);
 		   forward0[i+in.getLength()] = new Blob(1);
 		   forward0[i+in.getLength()].setValue(0, out.getValue(i)/div);
@@ -135,10 +135,10 @@ public class Network
 		   forward2[i+1] = layers.get(0).forward(forward[i]);
 		   layers.get(0).backward(forward0[i+1], null);
 		   layers.get(0).updateWeightsAndBias(forward[i], currRate);
-		   forward0[i+1].setValue(0, forward2[i+1].getValue(0));
+		   forward[i+1].setValue(1, forward2[i+1].getValue(0));
 	   }
 	   for (int i = 0; i < out.getLength(); i++) {
-		   forward3.setValue(i, forward0[i+in.getLength()].getValue(0)*div);
+		   forward3.setValue(i, forward[i+in.getLength()].getValue(1)*div);
 	   }
 	   return forward3;
    }
