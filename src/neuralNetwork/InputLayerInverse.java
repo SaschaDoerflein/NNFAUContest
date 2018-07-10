@@ -19,7 +19,7 @@ public class InputLayerInverse implements Layer
 			  if (temp > 0.0000001 || temp < 0.0000001) output.values[i] = 1/inputBlob.getValue(i);
 			  else output.values[i] = inputBlob.getValue(i);
 			  */
-			  output.values[i] = inputBlob.getValue(i)/1000;
+			  output.values[i] = inputBlob.getValue(i)/7000;
 		  }
 	      return output;
 	   }
