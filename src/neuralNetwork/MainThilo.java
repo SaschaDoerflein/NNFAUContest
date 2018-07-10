@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import test.SimpleAccuracyFunction;
 import test.TestHelper;
 
-public class MainBenny {
+public class MainThilo {
 	public static void main(String[] args) throws IOException
 	{
 		SimpleAccuracyFunction saf = new SimpleAccuracyFunction();
