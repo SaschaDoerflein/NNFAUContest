@@ -18,18 +18,18 @@ public class MainChris
 		---------------------------------------------------*/
 		if (test[0] == 1) {
 			ArrayList<Datum> dataAndLabel=DataReader.readTitanicDataset("titanic_training.txt",true);
-			int iterations = 1000;
+			int iterations = 3000;
 			int length = dataAndLabel.size();
-			Network n=new Network(new VariantLearningRate(0.0005f,iterations,1,null));
+			Network n=new Network(new VariantLearningRate(0.005f,iterations,1,null));
 			//Network n=new Network(new ConstantLearningRate(0.001f));
 	
 			n.add(new InputLayer(6));
-			n.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 6, 4, 16));
+			n.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 6, 5, 16));
 			/*for (int i = 0; i < 20; i++) {
 				n.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 4, 4));
 			}*/
 			
-			n.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 4, 2, 16));
+			n.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 5, 2, 16));
 			n.add(new OutputLayer(new EuclideanLoss(),new LinearActivation(), new RandomWeight(), new ConstantBias(), 2, 1, 16));
 			
 			
@@ -62,10 +62,12 @@ public class MainChris
 			}
 	
 			ArrayList<Datum> testData=DataReader.readTitanicDataset("titanic_test1.txt",false);
+			ArrayList<Datum> testDataexact=DataReader.readTitanicDataset("titanic_test1.txt",false);
 	
 			for(int i=0;i<testData.size();i++)
 			{
 				Blob out[]=n.forward(testData.get(i).data);
+				testDataexact.get(i).label.setValue(0, out[out.length-1].getValue(0)); 
 				if(out[out.length-1].getValue(0) < 0.5)
 				{
 					testData.get(i).label.setValue(0,0f);
@@ -77,6 +79,7 @@ public class MainChris
 			}
 	
 			DataWriter.writeLabelsToFile("titanic_prediction.txt", testData);
+			DataWriter.writeLabelsToFile("titanic_prediction_exact.txt", testDataexact);
 			System.out.println("done");
 		}
 		
@@ -88,26 +91,32 @@ public class MainChris
 			SimpleAccuracyFunction saf = new SimpleAccuracyFunction();
 			ArrayList<Float> result = new ArrayList<Float>();
 			ArrayList<Float> expected = new ArrayList<Float>();
+			boolean lstm = true;
 			
-			int iterations2 = 300;
+			int iterations2 = 50000;
 			
 			Network n2=new Network(new ConstantLearningRate(0.001f));
 			//Network n2=new Network(new VariantLearningRate(0.0001f,iterations2,1,null));
 			//LSTMCell(WeightFiller fillerWeight, BiasFiller fillerBias , int blocks, int cells,  int in, int out)
-			n2.add(new LSTMCell(new RandomWeight(), new ConstantBias(), 1, 1, 2, 1));
-			//n2.add(new InputLayerInverse(26));
-			//n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 26, 13, 50));
+			if (lstm) {
+				n2.add(new LSTMCell(new RandomWeight(), new ConstantBias(), 1, 10, 2, 1));
+			} else {
+				n2.add(new InputLayerInverse(26));
+				n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 26, 13, 50));
+				
+				n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 13, 6, 50));
+				n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 6, 6, 50));
+				n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 6, 6, 50));
+				n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 6, 6, 50));
+				n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 6, 6, 50));
+				n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 6, 6, 50));
+				n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 6, 6, 50));
+				n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 6, 6, 50));
 			
-			//n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 13, 13, 50));
-			//n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 13, 13, 50));
-			//n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 13, 13, 50));
-			//n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 13, 13, 50));
-			//n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 13, 13, 50));
-			//n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 13, 13, 50));
-			//n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 13, 13, 50));
-			//n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 13, 13, 50));
-		
-			//n2.add(new OutputLayer(new EuclideanLoss(), new LinearActivation(2000,0), new RandomWeight(), new ConstantBias(), 13, 6, 50));
+				n2.add(new OutputLayer(new EuclideanLoss(), new LinearActivation(7000,0), new RandomWeight(), new ConstantBias(), 6, 6, 50));
+			}
+			Blob out;
+			int when = 100;
 			int early = 0;
 			float temp = 0;
 			float var = 0;
@@ -123,8 +132,11 @@ public class MainChris
 				for(int i=0;i<dataAndLabel2.size();i++)
 				{
 					int idx=i;
-					Blob out = n2.trainLSTM(dataAndLabel2.get(idx).data, dataAndLabel2.get(idx).label);
-					//Blob out=n2.trainSimpleSGD(dataAndLabel2.get(idx).data, dataAndLabel2.get(idx).label);
+					if (lstm) {
+						out = n2.trainLSTM(dataAndLabel2.get(idx).data, dataAndLabel2.get(idx).label);
+					} else {
+					out = n2.trainSimpleSGD(dataAndLabel2.get(idx).data, dataAndLabel2.get(idx).label);
+					}
 	
 					if((j==iterations2-1 || j<5 || ( j > 9 && j%(iterations2/100)==0)) && i<count)
 					{
@@ -158,7 +170,7 @@ public class MainChris
 				
 				if((j==iterations2-1 || j<5 || ( j > 9 && j%(iterations2/100)==0))) {
 					if (Math.abs(temp/count - varOld/count) < 0.5) early++;
-					if (early == 5) j = iterations2-2;
+					if (early == when) j = iterations2-1;
 					System.out.println("var = " + temp/count);
 					System.out.println("maxvar = " + maxvar);
 					System.out.println("minvar = " + minvar);
@@ -178,15 +190,20 @@ public class MainChris
 			//System.out.println(testData2.size());
 			for(int i=0;i<testData2.size();i++)
 			{
-				/*Blob out[]=n2.forward(testData2.get(i).data);
-				for (int j = 0; j < out[out.length-1].getLength();j++) {
-					tempval = Math.round(out[out.length-1].getValue(j));
-					testData2.get(i).label.setValue(j,tempval);
-					*/
-				Blob out=n2.forwardLSTM(testData2.get(i).data);
-				for (int j = 0; j < out.getLength();j++) {
-					tempval = Math.round(out.getValue(j));
-					testData2.get(i).label.setValue(j,tempval);
+				
+				
+				if (lstm) {
+					out=n2.forwardLSTM(testData2.get(i).data);
+					for (int j = 0; j < out.getLength();j++) {
+						tempval = Math.round(out.getValue(j));
+						testData2.get(i).label.setValue(j,tempval);
+					}
+				} else {
+					Blob outar[]=n2.forward(testData2.get(i).data);
+					for (int j = 0; j < outar[outar.length-1].getLength();j++) {
+						tempval = Math.round(outar[outar.length-1].getValue(j));
+						testData2.get(i).label.setValue(j,tempval);
+					}
 				}
 			}
 
@@ -201,24 +218,24 @@ public class MainChris
 			
 			ArrayList<Datum> dataAndLabel3=DataReader.getImageDataset("image_training.bin",true);
 	
-			Network n2=new Network(new ConstantLearningRate(0.01f));
+			Network n2=new Network(new ConstantLearningRate(0.001f));
 	
 			n2.add(new InputLayer(32*32*3));
-			n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 32*32*3, 6, 16));
-			//n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 256, 128, 16));
+			n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 32*32*3, 16, 16));
+			//n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 64, 64, 16));
 			//n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 128, 64, 16));
-			//n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 64, 32, 16));
-			//n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 32, 16, 16));
+			n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 16, 16, 16));
+			n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 16, 8, 16));
 			//n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 16, 8, 16));
 			//n2.add(new FullyConnected(new SigmoidActivation(), new RandomWeight(), new ConstantBias(), 40, 10));
-			n2.add(new OutputLayer(new EuclideanLoss(), new LinearActivation(), new RandomWeight(), new ConstantBias(), 6, 6, 16));
-			int iterations = 1;
+			n2.add(new OutputLayer(new EuclideanLoss(), new LinearActivation(), new RandomWeight(), new ConstantBias(), 8, 6, 16));
+			int iterations = 500;
 			int length3 = dataAndLabel3.size();
 			for(int j=0;j<iterations;j++)
 			{
 				if (j > 10 && j%(iterations/10)==0 || j < 3) System.out.println("Iteration: "+j) ;
 		//early prediction
-				if (j > 100 && j%(iterations/100)==0) {
+				if (j > 99 && j%(iterations/100)==0) {
 					ArrayList<Datum> testData3=DataReader.getImageDataset("image_test1.bin",false);
 					float tempval;
 					float maxtempval = 0;
@@ -234,6 +251,7 @@ public class MainChris
 							}
 						}
 						testData3.get(i).label.setValue(0, (float) maxk);
+						maxtempval = 0;
 					}
 			
 					DataWriter.writeLabelsToFile("image_prediction.txt", testData3);
@@ -280,7 +298,7 @@ public class MainChris
 					}
 					
 				}
-				testData3.get(i).label.setValue(0, (float) 6f);
+				testData3.get(i).label.setValue(0, (float) maxj);
 				maxtempval = 0;
 			}
 	
