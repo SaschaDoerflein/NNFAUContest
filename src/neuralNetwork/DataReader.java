@@ -305,7 +305,7 @@ public class DataReader
 			    {
 			    	for(int x=0;x<32;x++)
 				    {
-				    	dataTemp.data.setValue(x,y,c,(float)fileData[count]/255);
+				    	dataTemp.data.setValue(x,y,c,(float)fileData[count]);
 				    	count++;
 				    }
 			    }
@@ -314,5 +314,42 @@ public class DataReader
 	    }
 
 		return data;
+	}
+	
+	public static ArrayList<Datum> getCreyscale(ArrayList<Datum> inputWithRGB, boolean isTrainingset){
+		ArrayList<Datum> output = new ArrayList<Datum>();
+		 int count=0;
+		for(Datum datum : inputWithRGB) {
+			Datum dataTemp;
+			if(isTrainingset==true)
+			{
+				dataTemp = new Datum(32,32,1,6);
+				for (int i = 0; i < 6; i++) {
+					dataTemp.label.setValue(i, datum.label.getValue(i));
+				}
+				
+			} else {
+				dataTemp = new Datum(32,32,1,1);
+			}
+			    for(int y=0;y<32;y++)
+			    {
+			    	for(int x=0;x<32;x++)
+				    {
+			    		float c0, c1, c2;
+			    		c0 = datum.data.getValue(x, y, 0);
+			    		c1 = datum.data.getValue(x, y, 1);
+			    		c2 = datum.data.getValue(x, y, 2);
+			    		
+			    		float creyValue = (c0+c1+c2)/3f;
+			    		
+			    		dataTemp.data.setValue(x, y, 0, creyValue);
+				    }
+			    }
+		    
+			output.add(dataTemp);
+		}
+		
+		return output;
+		
 	}
 }
