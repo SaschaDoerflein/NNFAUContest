@@ -11,9 +11,119 @@ public class MainSascha
 {
 	public static void main(String[] args) throws IOException
 	{
+		
+		
+		ArrayList<Datum> dataAndLabel2=DataReader.getImageDataset("image_training.bin",true);
+		ArrayList<Datum> dataAndLabel3 = DataReader.getCreyscale(dataAndLabel2,true);
+		Network n2=new Network(new ConstantLearningRate(0.001f));
+
+		n2.add(new InputLayer(32*32*1));
+		n2.add(new FullyConnected(new SigmoidActivation(), new RandomWeight(), new ConstantBias(), 32*32*1, 64, 16));
+		//n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 64, 64, 16));
+		//n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 128, 64, 16));
+		//n2.add(new FullyConnected(new SigmoidActivation(), new RandomWeight(), new ConstantBias(), 64, 32, 16));
+		n2.add(new FullyConnected(new SigmoidActivation(), new RandomWeight(), new ConstantBias(), 64, 32, 16));
+		n2.add(new FullyConnected(new SigmoidActivation(), new RandomWeight(), new ConstantBias(), 32, 16, 16));
+		//n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 16, 8, 16));
+		//n2.add(new FullyConnected(new SigmoidActivation(), new RandomWeight(), new ConstantBias(), 40, 10));
+		n2.add(new OutputLayer(new EuclideanLoss(), new LinearActivation(), new RandomWeight(), new ConstantBias(), 16, 6, 16));
+		int iterations = 100;
+		int length3 = dataAndLabel3.size();
+		
+		
+		for(int j=0;j<iterations;j++)
+		{
+			/*
+			if (j > 10 && j%(iterations/10)==0 || j < 3) System.out.println("Iteration: "+j) ;
+	//early prediction
+			if (j > 99 && j%(iterations/100)==0) {
+				ArrayList<Datum> testData3=DataReader.getImageDataset("image_test1.bin",false);
+				float tempval;
+				float maxtempval = 0;
+				int maxk = 0;
+				for(int i=0;i<testData3.size();i++)
+				{
+					Blob out[]=n2.forward(testData3.get(i).data);
+					for (int k = 0; k < 6; k++) {
+						tempval = out[out.length-1].getValue(k);
+						if (tempval > maxtempval) {
+							maxtempval = tempval;
+							maxk = k;
+						}
+					}
+					testData3.get(i).label.setValue(0, (float) maxk);
+					maxtempval = 0;
+				}
+		
+				DataWriter.writeLabelsToFile("image_prediction.txt", testData3);
+			}
+			*/
+			System.out.println("Iteration: "+j);
+			for(int i=0;i<length3;i++)
+			{
+				//if (i%10000 == 0) System.out.println("Test: "+ i + "/" + length3);
+				int idx=i;
+				Blob out=n2.trainSimpleSGD(dataAndLabel3.get(idx).data, dataAndLabel3.get(idx).label);
+
+				if((j==iterations-1 || j<10 || (j%(iterations/100)==0 && j > 50)) && i<10)
+				{
+					
+					for(int h=0;h<out.getLength();h++)
+					{
+					 	System.out.print(out.getValue(h)+" ");
+					}
+
+					System.out.print("vs. ");
+
+					for(int h=0;h<dataAndLabel3.get(idx).label.getLength();h++)
+					{
+					 	System.out.print(dataAndLabel3.get(idx).label.getValue(h)+" ");
+					}
+					System.out.println();
+				}
+			}
+		}
+		
+	//prediction
+		ArrayList<Datum> testData2=DataReader.getImageDataset("image_testset.bin",false);
+		ArrayList<Datum> testData3 = DataReader.getCreyscale(testData2,false);
+		
+		float tempval;
+		float maxtempval = 0;
+		int maxj = 0;
+		for(int i=0;i<testData3.size();i++)
+		{
+			Blob out[]=n2.forward(testData3.get(i).data);
+			for (int j = 0; j < 6; j++) {
+				tempval = out[out.length-1].getValue(j);
+				if (tempval > maxtempval) {
+					maxtempval = tempval;
+					maxj = j;
+				}
+				
+			}
+			testData3.get(i).label.setValue(0, (float) maxj);
+			maxtempval = 0;
+		}
+
+		DataWriter.writeLabelsToFile("image_prediction.txt", testData3);
+		System.out.print("done");
+	
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		/*
 		 * 
-		 */
+	
 		
 		
 		
@@ -58,10 +168,10 @@ public class MainSascha
 				minIterations, maxIterations, iterationsStepSize, 
 				minFactor, maxFactor, factorStepSize, activationFunctions, 
 				inputCount, outputCountRight, 
-				/* minOutputCountLeft, maxOutputCountLeft,*/ minHiddenLayers, maxHiddenLayers, minHiddenCount, maxHiddenCount, 
+				/* minOutputCountLeft, maxOutputCountLeft,*//* minHiddenLayers, maxHiddenLayers, minHiddenCount, maxHiddenCount, 
 				lfList, wfList, bfList,
 				minExcecutionPrevent, maxExcecutionPrevent, excecutionPreventStepSize);
-				
+				 */			
 		
 	/*
 		SimpleAccuracyFunction saf = new SimpleAccuracyFunction();
