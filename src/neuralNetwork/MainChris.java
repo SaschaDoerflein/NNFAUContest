@@ -11,11 +11,11 @@ public class MainChris
 	public static void main(String[] args) throws IOException
 	{
 		//entscheidet welches Set läuft
-		int[] test = {1,0,0};
+		int[] test = {0,1,0};
 		/*für den derzeitigen Rekord 85.185 wurden diese Einstellungen genutzt falls sie sich geändert haben sollen.
 		* iterations = 3000; VariantLearningRate(0.005f,it,1,null); 2 Hidden Layer einmal 6 auf 5 und einmal 5 auf 2 mit TanhAct;
 		* Das Online Ergebniss hängt sehr stark von den initialen Weights i.e RandomWeight ab...
-		* für den Rekord wurde diese^^ Einstellung etwa 10+ mal versucht.
+		* für den Rekord wurde diese^^ Einstellung etwa 10+ mal versucht...vermutlich etwas Glück Werte zw. 76, und 85%.
 		*/
 		/*---------------------------------------------------
 		------ Example NeuralNet using Titanic-Dataset ------
@@ -83,13 +83,17 @@ public class MainChris
 			}
 	
 			DataWriter.writeLabelsToFile("titanic_prediction.txt", testData);
-			DataWriter.writeLabelsToFile("titanic_prediction_exact.txt", testDataexact);
+			//DataWriter.writeLabelsToFile("titanic_prediction_exact.txt", testDataexact);
 			System.out.println("done");
 		}
 		
 		/*---------------------------------------------------
 		------ Example NeuralNet using TravelTimeDataset ------
 		---------------------------------------------------*/
+		/* um die Baseline zu schlagen/den Platz zu begründen i.e ca. 170 oder besser reicht:
+		 *  iteration 1000, constantlearningRate 0.002 und lstm true ein Block mit 4 zellen i.e LSTMCell,...1,4,2,1;
+		 * für den Rekord weiß ich die Einstellungen nicht mehr genau sollte aber punktetechnisch keine Rolle spielen;
+		 */
 		if (test[1] == 1) {
 			ArrayList<Datum> dataAndLabel2=DataReader.readTraveltimeDataset("rta_training.txt",true);
 			SimpleAccuracyFunction saf = new SimpleAccuracyFunction();
@@ -97,13 +101,13 @@ public class MainChris
 			ArrayList<Float> expected = new ArrayList<Float>();
 			boolean lstm = true;
 			
-			int iterations2 = 50000;
+			int iterations2 = 1000;
 			
 			Network n2=new Network(new ConstantLearningRate(0.002f));
 			//Network n2=new Network(new VariantLearningRate(0.0001f,iterations2,1,null));
 			//LSTMCell(WeightFiller fillerWeight, BiasFiller fillerBias , int blocks, int cells,  int in, int out)
 			if (lstm) {
-				n2.add(new LSTMCell(new RandomWeight(), new ConstantBias(), 1, 10, 2, 1));
+				n2.add(new LSTMCell(new RandomWeight(), new ConstantBias(), 1, 4, 2, 1));
 			} else {
 				n2.add(new InputLayerInverse(26));
 				n2.add(new FullyConnected(new TanhActivation(), new RandomWeight(), new ConstantBias(), 26, 13, 50));
