@@ -92,7 +92,7 @@ public class MainChris
 		---------------------------------------------------*/
 		/* um die Baseline zu schlagen/den Platz zu begründen i.e ca. 170 oder besser reicht:
 		 *  iteration 1000, constantlearningRate 0.002 und lstm true ein Block mit 4 zellen i.e LSTMCell,...1,4,2,1;
-		 * für den Rekord weiß ich die Einstellungen nicht mehr genau sollte aber punktetechnisch keine Rolle spielen
+		 * für den Rekord weiß ich die Einstellungen nicht mehr genau sollte aber punktetechnisch keine Rolle spielen;
 		 */
 		if (test[1] == 1) {
 			ArrayList<Datum> dataAndLabel2=DataReader.readTraveltimeDataset("rta_training.txt",true);
