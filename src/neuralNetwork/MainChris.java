@@ -10,9 +10,13 @@ public class MainChris
 {
 	public static void main(String[] args) throws IOException
 	{
-		//Testcases.doTestcases();
-		int[] test = {0,1,0};
-
+		//entscheidet welches Set läuft
+		int[] test = {1,0,0};
+		/*für den derzeitigen Rekord 85.185 wurden diese Einstellungen genutzt falls sie sich geändert haben sollen.
+		* iterations = 3000; VariantLearningRate(0.005f,it,1,null); 2 Hidden Layer einmal 6 auf 5 und einmal 5 auf 2 mit TanhAct;
+		* Das Online Ergebniss hängt sehr stark von den initialen Weights i.e RandomWeight ab...
+		* für den Rekord wurde diese^^ Einstellung etwa 10+ mal versucht.
+		*/
 		/*---------------------------------------------------
 		------ Example NeuralNet using Titanic-Dataset ------
 		---------------------------------------------------*/
@@ -95,7 +99,7 @@ public class MainChris
 			
 			int iterations2 = 50000;
 			
-			Network n2=new Network(new ConstantLearningRate(0.001f));
+			Network n2=new Network(new ConstantLearningRate(0.002f));
 			//Network n2=new Network(new VariantLearningRate(0.0001f,iterations2,1,null));
 			//LSTMCell(WeightFiller fillerWeight, BiasFiller fillerBias , int blocks, int cells,  int in, int out)
 			if (lstm) {
@@ -116,7 +120,7 @@ public class MainChris
 				n2.add(new OutputLayer(new EuclideanLoss(), new LinearActivation(7000,0), new RandomWeight(), new ConstantBias(), 6, 6, 50));
 			}
 			Blob out;
-			int when = 100;
+			int when = 20;
 			int early = 0;
 			float temp = 0;
 			float var = 0;
