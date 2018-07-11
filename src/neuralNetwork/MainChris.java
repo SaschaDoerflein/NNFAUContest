@@ -83,7 +83,7 @@ public class MainChris
 			}
 	
 			DataWriter.writeLabelsToFile("titanic_prediction.txt", testData);
-			DataWriter.writeLabelsToFile("titanic_prediction_exact.txt", testDataexact);
+			//DataWriter.writeLabelsToFile("titanic_prediction_exact.txt", testDataexact);
 			System.out.println("done");
 		}
 		
