@@ -318,7 +318,6 @@ public class DataReader
 	
 	public static ArrayList<Datum> getCreyscale(ArrayList<Datum> inputWithRGB, boolean isTrainingset){
 		ArrayList<Datum> output = new ArrayList<Datum>();
-		 int count=0;
 		for(Datum datum : inputWithRGB) {
 			Datum dataTemp;
 			if(isTrainingset==true)
